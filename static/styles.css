@@ -199,13 +199,16 @@ select:hover, .button:hover {
 }
 
 .day-details {
+    border: 1px solid black;
     display: none;
     text-align: left;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.3); /* soft translucent bg */
+    color: #222; /* solid, readable text */
+    padding: 12px 15px;
     margin-top: 10px;
     border-radius: 10px;
     line-height: 1.5;
+    font-size: 0.92rem;
 }
 
 .day-details p {
@@ -214,8 +217,13 @@ select:hover, .button:hover {
 
 .day-details hr {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: 1px solid rgba(0, 0, 0, 0.15); /* visible divider */
     margin: 10px 0;
+}
+
+.day-details strong {
+    color: #004d5b; /* darker cyan tone */
+    font-weight: 600;
 }
 
 .arrow {
@@ -226,9 +234,6 @@ select:hover, .button:hover {
     transform: rotate(180deg);
 }
 
-/* Example color palette */
 .color-0 { background-color: #00bcd4; }
 .color-1 { background-color: #009688; }
 .color-2 { background-color: #4caf50; }
-.color-3 { background-color: #ff9800; }
-.color-4 { background-color: #e91e63; }
