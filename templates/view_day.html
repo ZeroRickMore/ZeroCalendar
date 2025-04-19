@@ -9,7 +9,9 @@
 <body>
 
     <div class="banner">
+        <button class="back-button" onclick="goBack()">⏪</button>
         Eventi {{ day }}/{{ month }}/{{ year }}
+        <button class="forward-button" onclick="goForward()">⏩</button>
     </div>
 
     <div class="calendar-container">
@@ -50,5 +52,16 @@
             arrow.classList.toggle('rotate');
         }
     </script>
+
+    <script>
+        function goBack() {
+            window.history.back(); // Go to the previous page in the browser history
+        }
+
+        function goForward() {
+        window.history.forward(); // Go to the next page in the browser history
+        }
+    </script>
+
 </body>
 </html>
