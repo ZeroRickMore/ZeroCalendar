@@ -80,13 +80,11 @@ def modify_event(event_id):
     username = get_user()
 
      # Save old version =============================
-    to_be_modified_event.old_version = f'''
-- Titolo: << {to_be_modified_event.title} >>
+    to_be_modified_event.old_version = f'''- Titolo: << {to_be_modified_event.title} >>
 - Giorno: {to_be_modified_event.day}
 - Ora: {to_be_modified_event.when}
 - Descrizione:
-<<{to_be_modified_event.description}>>
-    '''
+<<{to_be_modified_event.description}>>'''
 
     to_be_modified_event.last_modified_desc += f"- Modificato da {username} - {get_current_timestamp_string()}\n"
     # ================================================
