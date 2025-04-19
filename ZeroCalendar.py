@@ -3,6 +3,7 @@ from models import db, DayEvent
 from parsers import parse_and_get_DayEvent_object_from_dict, get_DayEvent_dict_from_request_form
 from validators import DayEvent_validator
 from support import get_user, get_current_timestamp_string
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
@@ -136,7 +137,7 @@ def delete_event(event_id):
 
 
 
-@app.route('/view_event/<int:event_id>')
+@app.route('/view_event/<int:event_id>', methods=['GET'])
 def view_event(event_id):
     '''
     View an event by id
@@ -148,10 +149,22 @@ def view_event(event_id):
 
     return to_be_viewed_event.__repr__()
 
-@app.route('/view_day')
-def view_day():
-    pass
+@app.route('/view_day/<day>', methods=['GET'])
+def view_day(day):
+    '''
+    View all events in a day.
+    The day must be in format
+    2025-04-19
+    YY-MM-DD
+    '''
+    if not isinstance(day, str):
+        raise TypeError(f"day must be str, not {type(day)}")
+    
+    target_day = datetime.strptime(day, "%Y-%m-%d").date()
 
+    events_on_day = db.session.query(DayEvent).filter(DayEvent.day == target_day).all()
+
+    return str(events_on_day) + f'\n\nA TOTAL OF {len(events_on_day)}'
 
 
 
