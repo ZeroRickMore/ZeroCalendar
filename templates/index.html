@@ -30,13 +30,50 @@
             <button class="button" onclick="goToMonth()">Vai alla data</button>
         </div>
     
+        <!-- Weekdays Row -->
+        <div class="weekdays-row">
+            <div class="weekday">Lun</div>
+            <div class="weekday">Mar</div>
+            <div class="weekday">Mer</div>
+            <div class="weekday">Gio</div>
+            <div class="weekday">Ven</div>
+            <div class="weekday">Sab</div>
+            <div class="weekday">Dom</div>
+        </div>
+    
         <!-- Calendar Days Grid -->
         <div class="days-grid">
             {% for day, number in day_numbers.items() %}
-                <div class="day">
-                    <a href="{{ url_for('view_day', day=day, year=year, month=month)}}">
-                        {{ day }} (<span>{{ number }}</span>)
-                    </a>
+                <div class="day{% if number is none %}empty{% endif %}">
+                    {% if number is none %}
+                        <a href="#" class="empty-day"></a>
+                    {% elif number is string %}
+                        <a href="{{ url_for('view_day', day=day, year=year, month=month)}}" class="past-day">
+                            {{ day }} <!-- (<span>{{ number }}</span>) -->
+                        </a> 
+                    {% else %}
+                        {% if number == 0 %}
+                        <a href="{{ url_for('view_day', day=day, year=year, month=month)}}">
+                            {{ day }} <!-- (<span>{{ number }}</span>) -->
+                        </a>
+                        {% elif number < 3 %}
+                            <a href="{{ url_for('view_day', day=day, year=year, month=month)}}" class="low-day">
+                                {{ day }} <!-- (<span>{{ number }}</span>) -->
+                            </a>
+                        {% elif number < 4 %}
+                            <a href="{{ url_for('view_day', day=day, year=year, month=month)}}" class="medium-day">
+                                {{ day }} <!-- (<span>{{ number }}</span>) -->
+                            </a>
+                        {% elif number < 5 %}
+                            <a href="{{ url_for('view_day', day=day, year=year, month=month)}}" class="big-day">
+                                {{ day }} <!-- (<span>{{ number }}</span>) -->
+                            </a>      
+                        {% else %}
+                            <a href="{{ url_for('view_day', day=day, year=year, month=month)}}" class="omega-day">
+                                {{ day }} <!-- (<span>{{ number }}</span>) -->
+                            </a> 
+                        {% endif %}
+                    {% endif %}  
                 </div>
             {% endfor %}
         </div>

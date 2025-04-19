@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f8ff; /* Light cyan background */
+    background-color: #ffffff;
     color: #333;
     text-align: center;
 }
@@ -16,7 +16,7 @@ body {
 .banner {
     background-color: #00bcd4; /* Cyan color */
     color: white;
-    padding: 15px 0;
+    padding: 20px 0;
     font-size: 2rem;
     font-weight: bold;
     text-align: center;
@@ -64,6 +64,20 @@ select:hover, .button:hover {
     font-weight: bold;
 }
 
+/* Weekdays Row */
+.weekdays-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.weekday {
+    font-weight: bold;
+    color: #00bcd4;
+    font-size: 1.1rem;
+}
+
 /* Days Grid */
 .days-grid {
     display: grid;
@@ -74,18 +88,20 @@ select:hover, .button:hover {
 
 .day {
     margin: 0;
+    position: relative;
 }
 
-/* Day Buttons */
 .day a {
-    display: inline-block;
-    padding: 10px 20px;
+    display: block;
+    width: 100%;
+    padding: 10px 0;
     background-color: #00bcd4;
     color: white;
     border-radius: 12px;
     text-decoration: none;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
+    font-size: 1rem;
 }
 
 .day a:hover {
@@ -93,17 +109,34 @@ select:hover, .button:hover {
     background-color: #018fa2; /* Darker cyan on hover */
 }
 
-/* Responsive Design */
+/* Empty Day - Transparent */
+.empty a.empty-day {
+    background-color: transparent;
+    border: 1px solid #dcdcdc; /* Light border to keep the spacing */
+    color: transparent; /* Hide text */
+}
+
+.day a.low-day {
+    background-color: rgb(0, 158, 97);
+}
+
+.day a.medium-day {
+    background-color: rgb(255, 179, 0);
+}
+
+.day a.big-day {
+    background-color: rgb(255, 102, 0);
+}
+
+.day a.omega-day {
+    background-color: rgb(204, 0, 0);
+}
+
+.day a.past-day {
+    background-color: #d7d0cc;
+}
+
 @media (max-width: 768px) {
-    .scroll-bar-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .days-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 days per row on smaller screens */
-    }
-
     .button {
         font-size: 0.9rem;
         padding: 8px 15px;
@@ -112,17 +145,17 @@ select:hover, .button:hover {
     select {
         font-size: 0.9rem;
     }
+
+    .day a {
+        font-size: 0.85rem;
+        padding: 8px 0;
+    }
 }
 
 @media (max-width: 480px) {
     .banner {
         font-size: 1.5rem;
         padding: 10px 0;
-    }
-
-    .scroll-bar-container {
-        flex-direction: column;
-        gap: 10px;
     }
 
     .button {
@@ -134,12 +167,8 @@ select:hover, .button:hover {
         font-size: 0.8rem;
     }
 
-    .days-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 days per row on very small screens */
-    }
-
     .day a {
-        font-size: 0.9rem;
-        padding: 8px 15px;
+        font-size: 0.75rem;
+        padding: 6px 0;
     }
 }
