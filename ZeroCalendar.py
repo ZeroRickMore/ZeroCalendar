@@ -1,23 +1,25 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from models import db, DayEvent
 from parsers import parse_and_get_DayEvent_object_from_dict, get_DayEvent_dict_from_request_form
 from validators import DayEvent_validator
 from support import get_user, get_current_timestamp_string
-from datetime import datetime
+from datetime import datetime, date
+import calendar
+from markupsafe import escape
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app) # Connect to db
-    
-# Create db
-with app.app_context():
-    db.create_all()
 
 # ====================================
 #               ROUTES
 # ====================================
+    
+@app.route('/ping')
+def ping():
+    return 'pong'
 
 
 # ====================================
@@ -149,43 +151,56 @@ def view_event(event_id):
 
     return to_be_viewed_event.__repr__()
 
-@app.route('/view_day/<day>', methods=['GET'])
-def view_day(day):
+@app.route('/view_day/<int:day>-<int:month>-<int:year>', methods=['GET'])
+def view_day(day, month, year):
     '''
     View all events in a day.
-    The day must be in format
-    2025-04-19
-    YY-MM-DD
     '''
-    if not isinstance(day, str):
+    if not isinstance(day, int):
         raise TypeError(f"day must be str, not {type(day)}")
+    if not isinstance(month, int):
+        raise TypeError(f"day must be str, not {type(month)}")
+    if not isinstance(year, int):
+        raise TypeError(f"day must be str, not {type(year)}")
     
-    target_day = datetime.strptime(day, "%Y-%m-%d").date()
+    print(day, month, year)
+
+    target_day = date(year, month, day)
 
     events_on_day = db.session.query(DayEvent).filter(DayEvent.day == target_day).all()
 
-    return str(events_on_day) + f'\n\nA TOTAL OF {len(events_on_day)}'
+    return escape(str(events_on_day) + f'\n\nA TOTAL OF {len(events_on_day)}')
+
+
+@app.route('/')
+def index():
+    today = datetime.today()
+    current_year = today.year
+    current_month = today.month
+
+    return redirect(url_for('view_month', year=current_year, month=current_month))
 
 
 
+@app.route('/view_month/<int:year>-<int:month>')
+def view_month(year, month):
 
+    _, day_number = calendar.monthrange(year, month)
+    day_numbers = [i for i in range(1, day_number+1)] # These are the actual days
 
+    day_numbers_dict = {}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    for day_number in day_numbers:
+        target_day = date(year, month, day_number)
+        day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.day == target_day).count()
+    
+    return render_template('index.html', 
+                           year=year, 
+                           month=month, 
+                           day_numbers=day_numbers_dict,
+                           months=calendar.month_name[1:], 
+                           years=range(2025, 2041)
+    )
 
 
 
