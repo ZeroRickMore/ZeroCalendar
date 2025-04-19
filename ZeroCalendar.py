@@ -186,19 +186,26 @@ def index():
 def view_month(year, month):
 
     _, day_number = calendar.monthrange(year, month)
-    day_numbers = [i for i in range(1, day_number+1)] # These are the actual days
+    first_weekday_index = calendar.weekday(year, month, 1)
+
+    day_numbers = [50+_ for _ in range(first_weekday_index)]+[i for i in range(1, day_number+1)] # Skip to fit monday in column
 
     day_numbers_dict = {}
 
     for day_number in day_numbers:
-        target_day = date(year, month, day_number)
-        day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.day == target_day).count()
+        if day_number >= 50 : # Days to skip
+            day_numbers_dict[day_number] = None
+        elif day_number < datetime.today().day: # Past day
+            day_numbers_dict[day_number] = 'A'
+        else:
+            target_day = date(year, month, day_number)
+            day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.day == target_day).count()
     
     return render_template('index.html', 
-                           year=year, 
-                           month=month, 
+                           year=year,
+                           month=month,
                            day_numbers=day_numbers_dict,
-                           months=calendar.month_name[1:], 
+                           months=['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
                            years=range(2025, 2041)
     )
 
