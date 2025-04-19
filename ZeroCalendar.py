@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from models import db, DayEvent
-from parsers import parse_and_get_DayEvent_object_from_dict
+from parsers import parse_and_get_DayEvent_object_from_dict, get_DayEvent_dict_from_request_form
+from validators import DayEvent_validator
 from datetime import datetime, date, time
+from support import get_user, get_current_timestamp_string
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
@@ -35,17 +37,8 @@ def add_event():
     
     The username is inferred from the usernames.json
     '''
-    form_data = request.form
 
-    input_data = {
-        'username' : form_data.get('username'),
-        'description' : form_data.get('description'),
-        'title' : form_data.get('title'),
-        'old_version' : form_data.get('old_version'),
-        'last_modified_desc' : form_data.get('last_modified_desc'),
-        'day' : datetime.strptime(form_data.get('day'), '%Y-%m-%d').date() if form_data.get('day') else None, # Format day
-        'when' : datetime.strptime(form_data.get('when'), '%H:%M').time() if form_data.get('when') else None, # Format when
-    }
+    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
 
     new_day_event : DayEvent = parse_and_get_DayEvent_object_from_dict(d = input_data)
     
@@ -56,24 +49,65 @@ def add_event():
 
 
 
-@app.route('/modify_event')
-def modify_event():
+@app.route('/modify_event/<event_id>', methods=['POST'])
+def modify_event(event_id):
     '''
-    Modify an event, via a POST request
+    Modify an event, via a POST request on URL with its ID,
     containing:
 
-    title = A max 100 chars string. By default the first 5 words of the desc, up to 100 chars.
-    day = Date
-    when = Time, in 24h format
-    description = Generic text
+        username,
+        title,
+        day,
+        when,
+        description,
+        old_version,
+        last_modified_desc,
     
     The username is inferred from the usernames.json
     '''
-    pass
+    if not isinstance(event_id, int):
+        raise TypeError(f"event_id must be int: {type(event_id)}")
+    
+    
+    to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
+    old = to_be_modified_event # TODO -> DEBUG
+
+    if to_be_modified_event is None:
+        raise Exception("Event to modify not found...")
+
+    username = get_user()
+
+     # Save old version =============================
+    to_be_modified_event.old_version = f'''
+- Titolo: <<{to_be_modified_event.title}>>
+- Giorno: {to_be_modified_event.day}
+- Ora: {to_be_modified_event.when}
+- Descrizione:
+<<{to_be_modified_event.description}>>
+    '''
+
+    to_be_modified_event.last_modified_desc += f"- Modificato da {username} - {get_current_timestamp_string()}\n"
+    # ================================================
+
+    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
+
+    to_be_modified_event.username = username
+    to_be_modified_event.description = input_data['description']
+    to_be_modified_event.title = input_data['title']
+    to_be_modified_event.old_version = input_data['old_version']
+    to_be_modified_event.last_modified_desc = input_data['last_modified_desc']
+    to_be_modified_event.day = input_data['day']
+    to_be_modified_event.when = input_data['when']
+
+    DayEvent_validator(day_event = to_be_modified_event) # Make sure the modifications make sense
+
+    db.session.commit()
+
+    return {'status': 'success', 'old' : old.__repr__(),'new': to_be_modified_event.__repr__()}, 201
 
 
 
-@app.route('/delete_event')
+@app.route('/delete_event/')
 def delete_event():
     '''
     Delete an event.
