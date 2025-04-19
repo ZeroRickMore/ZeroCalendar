@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, render_template
 from models import db, DayEvent
 from parsers import parse_and_get_DayEvent_object_from_dict, get_DayEvent_dict_from_request_form
 from validators import DayEvent_validator
@@ -142,11 +142,17 @@ def delete_event(event_id):
 
 
 
-@app.route('/view_event')
-def view_event():
-    pass
+@app.route('/view_event/<int:event_id>')
+def view_event(event_id):
+    '''
+    View an event by id
+    '''
+    if not isinstance(event_id, int):
+        raise TypeError(f"event_id must be int: {type(event_id)}")  
 
+    to_be_viewed_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
+    return to_be_viewed_event.__repr__()
 
 @app.route('/view_day')
 def view_day():
