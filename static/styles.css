@@ -21,6 +21,35 @@ body {
     font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
+    position: relative; /* To position the buttons inside the banner */
+}
+
+.back-button, .forward-button {
+    position: absolute;
+    top: 50%; /* Vertically center the buttons */
+    transform: translateY(-50%); /* Exact centering */
+    background-color: #ffffff;
+    color: #00bcd4;
+    border: 2px solid #00bcd4;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.back-button {
+    left: 20px; /* Position the "Back" button to the left */
+}
+
+.forward-button {
+    right: 20px; /* Position the "Forward" button to the right */
+}
+
+.back-button:hover, .forward-button:hover {
+    background-color: #00bcd4;
+    color: white;
+    border-color: #00bcd4;
 }
 
 /* Calendar Container */
@@ -209,6 +238,7 @@ select:hover, .button:hover {
     border-radius: 10px;
     line-height: 1.5;
     font-size: 0.92rem;
+    transition: max-height 1s ease, opacity 1s ease; /* Slow animation */
 }
 
 .day-details p {
