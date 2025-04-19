@@ -4,8 +4,8 @@ def get_user(catcher = None):
     '''
     Infer the user using usernames.json
     '''
-    if catcher is None:
-        raise Exception("CAUGHT!")
+    # if catcher is None:
+    #     raise Exception("CAUGHT!")
     
     username = None
     username = 'TEST'
