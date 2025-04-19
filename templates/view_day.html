@@ -48,7 +48,9 @@
         function toggleDetails(entry) {
             const details = entry.querySelector('.day-details');
             const arrow = entry.querySelector('.arrow');
-            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+
+            // Toggle the 'show' class for smooth transition
+            details.classList.toggle('show');
             arrow.classList.toggle('rotate');
         }
     </script>

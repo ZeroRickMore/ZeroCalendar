@@ -229,7 +229,6 @@ select:hover, .button:hover {
 
 .day-details {
     border: 1px solid black;
-    display: none;
     text-align: left;
     background-color: rgba(255, 255, 255, 0.3); /* soft translucent bg */
     color: #222; /* solid, readable text */
@@ -238,7 +237,19 @@ select:hover, .button:hover {
     border-radius: 10px;
     line-height: 1.5;
     font-size: 0.92rem;
-    transition: max-height 1s ease, opacity 1s ease; /* Slow animation */
+
+    opacity: 0;
+    max-height: 0; /* Hidden by default */
+    visibility: hidden; /* Ensure the content is completely invisible */
+    overflow: auto;
+    transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
+}
+
+.day-details.show {
+    opacity: 1;
+    max-height: 270px; /* Arbitrary large value for smooth transition */
+    visibility: visible; /* Make it visible when showing */
+    transition: opacity 1.6s ease, max-height 1.7s ease;
 }
 
 .day-details p {
@@ -257,12 +268,13 @@ select:hover, .button:hover {
 }
 
 .arrow {
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease; /* Smooth arrow rotation */
 }
 
 .arrow.rotate {
     transform: rotate(180deg);
 }
+
 
 .color-0 { background-color: #00bcd4; }
 .color-1 { background-color: #009688; }
