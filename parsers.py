@@ -47,8 +47,8 @@ def parse_and_get_DayEvent_object_from_dict(d : dict = None):
 
     # Throws KeyError if it's not present (it should be...)
     day_event.username = d['username']
-    day_event.description = d['description']
-    day_event.title = d['title']
+    day_event.description = d['description'].capitalize()
+    day_event.title = d['title'].capitalize()
     day_event.old_version = d['old_version']
     day_event.last_modified_desc = d['last_modified_desc']
     day_event.day = d['day']
