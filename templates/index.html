@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .scroll-bar-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        select {
+            margin-right: 10px;
+        }
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day {
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .day:hover {
+            background-color: #f0f0f0;
+        }
+        .button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <!-- Scroll Bars for Month and Year -->
+        <div class="scroll-bar-container">
+            <select id="month-select" onchange="updateUrl()">
+                {% for i in range(1, 13) %}
+                    <option value="{{ i }}" {% if i == month %}selected{% endif %}>{{ months[i - 1] }}</option>
+                {% endfor %}
+            </select>
+    
+            <select id="year-select" onchange="updateUrl()">
+                {% for y in years %}
+                    <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+    
+            <button class="button" onclick="goToMonth()">Vai alla data</button>
+        </div>
+    
+        <!-- Calendar Days Grid -->
+        <div class="days-grid">
+            {% for day, number in day_numbers.items() %}
+                <div class="day">
+                    <a href="{{ url_for('view_day', day=day, year=year, month=month)}}">
+                        {{ day }} (<span>{{ number }}</span>)
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function updateUrl() {
+            const month = document.getElementById('month-select').value;
+            const year = document.getElementById('year-select').value;
+            const url = `/view_month/${year}-${month.padStart(2, '0')}`;
+            window.history.pushState({}, '', url);
+        }
+
+        function goToMonth() {
+            const month = document.getElementById('month-select').value;
+            const year = document.getElementById('year-select').value;
+            window.location.href = `/view_month/${year}-${month.padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
