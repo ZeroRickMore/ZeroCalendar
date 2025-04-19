@@ -49,7 +49,7 @@ def add_event():
 
 
 
-@app.route('/modify_event/<event_id>', methods=['POST'])
+@app.route('/modify_event/<int:event_id>', methods=['POST'])
 def modify_event(event_id):
     '''
     Modify an event, via a POST request on URL with its ID,
@@ -70,7 +70,7 @@ def modify_event(event_id):
     
     
     to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
-    old = to_be_modified_event # TODO -> DEBUG
+    old = to_be_modified_event # TODO DEBUG
 
     if to_be_modified_event is None:
         raise Exception("Event to modify not found...")
@@ -103,19 +103,37 @@ def modify_event(event_id):
 
     db.session.commit()
 
+    to_be_modified_event = db.session.get(DayEvent, event_id) # TODO DEBUG
+
     return {'status': 'success', 'old' : old.__repr__(),'new': to_be_modified_event.__repr__()}, 201
 
 
 
-@app.route('/delete_event/')
-def delete_event():
+@app.route('/delete_event/<int:event_id>', methods=['GET'])
+def delete_event(event_id):
     '''
-    Delete an event.
-    This is a simple GET request, only user with the same name of the owner
-    can delete it.
+    Delete an event by its id.
+    This is a simple GET request, no checks whatsoever.
+
+    The element is not really deleted... It just doesn't appear anymore normally.
+    Consider it to go to a trash bin.
+    '''
+
+    if not isinstance(event_id, int):
+        raise TypeError(f"event_id must be int: {type(event_id)}")
     
-    '''
-    pass
+    to_be_deleted_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
+
+    old = to_be_deleted_event # TODO DEBUG
+
+    to_be_deleted_event.deleted = True
+
+    db.session.commit()
+
+    to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
+
+    return {'status': 'success', 'old' : old.__repr__(),'new': to_be_deleted_event.__repr__()}, 201
+
 
 
 # ====================================
