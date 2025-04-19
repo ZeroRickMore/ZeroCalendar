@@ -1,0 +1,145 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* Light cyan background */
+    color: #333;
+    text-align: center;
+}
+
+/* Banner */
+.banner {
+    background-color: #00bcd4; /* Cyan color */
+    color: white;
+    padding: 15px 0;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Calendar Container */
+.calendar-container {
+    max-width: 90%;
+    margin: 0 auto;
+}
+
+/* Scroll Bars & Button */
+.scroll-bar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+select, .button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 20px;
+    border: 2px solid #00bcd4;
+    background-color: #ffffff;
+    color: #00bcd4;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+select:focus, .button:focus {
+    outline: none;
+}
+
+select:hover, .button:hover {
+    background-color: #00bcd4;
+    color: white;
+    border-color: #00bcd4;
+}
+
+.button {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Days Grid */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 15px;
+    justify-content: center;
+}
+
+.day {
+    margin: 0;
+}
+
+/* Day Buttons */
+.day a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #00bcd4;
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.day a:hover {
+    transform: scale(1.1);
+    background-color: #018fa2; /* Darker cyan on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scroll-bar-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .days-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 days per row on smaller screens */
+    }
+
+    .button {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+
+    select {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner {
+        font-size: 1.5rem;
+        padding: 10px 0;
+    }
+
+    .scroll-bar-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button {
+        font-size: 0.8rem;
+        padding: 7px 12px;
+    }
+
+    select {
+        font-size: 0.8rem;
+    }
+
+    .days-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 days per row on very small screens */
+    }
+
+    .day a {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+}

@@ -3,47 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .calendar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .scroll-bar-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        select {
-            margin-right: 10px;
-        }
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-        .day {
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .day:hover {
-            background-color: #f0f0f0;
-        }
-        .button {
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-    </style>
+    <title>ZeroCalendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to your CSS file -->
 </head>
 <body>
+    <!-- Top Banner -->
+    <div class="banner">
+        ZeroCalendar
+    </div>
+
     <div class="calendar-container">
         <!-- Scroll Bars for Month and Year -->
         <div class="scroll-bar-container">
