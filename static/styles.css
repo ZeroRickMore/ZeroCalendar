@@ -172,3 +172,63 @@ select:hover, .button:hover {
         padding: 6px 0;
     }
 }
+
+
+
+
+/*============================================================================================================*/
+
+
+
+.day-entry {
+    padding: 15px 20px;
+    margin: 15px auto;
+    border-radius: 15px;
+    color: white;
+    width: 90%;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.day-details {
+    display: none;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    line-height: 1.5;
+}
+
+.day-details p {
+    margin: 6px 0;
+}
+
+.day-details hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 10px 0;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.arrow.rotate {
+    transform: rotate(180deg);
+}
+
+/* Example color palette */
+.color-0 { background-color: #00bcd4; }
+.color-1 { background-color: #009688; }
+.color-2 { background-color: #4caf50; }
+.color-3 { background-color: #ff9800; }
+.color-4 { background-color: #e91e63; }

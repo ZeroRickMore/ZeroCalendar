@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettagli Giorno</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="banner">
+        Dettagli per il giorno {{ day }}/{{ month }}/{{ year }}
+    </div>
+
+    <div class="calendar-container">
+        {% for item in day_objects %}
+            <div class="day-entry color-{{ loop.index0 % 5 }}" onclick="toggleDetails(this)">
+                <div class="day-header">
+                    <span>{{ item.when }} - {{ item.title }}</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="day-details">
+                    <p><strong>Caricato da:</strong> {{ item.username }}</p>
+                    
+                    <hr>
+                
+                    <p style="white-space: pre-wrap;">{{ item.description }}</p>
+                
+                    {% if item.old_version != 'Nessuna versione precedente' %}
+                        <hr>
+                        <p><strong>Versione precedente:</strong></p>
+                        <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
+                    {% endif %}
+                
+                    {% if item.last_modified_desc != '' %}
+                        <hr>
+                        <p><strong>Modifiche:</strong></p>
+                        <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleDetails(entry) {
+            const details = entry.querySelector('.day-details');
+            const arrow = entry.querySelector('.arrow');
+            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+            arrow.classList.toggle('rotate');
+        }
+    </script>
+</body>
+</html>
