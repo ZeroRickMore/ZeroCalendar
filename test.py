@@ -1,11 +1,12 @@
 import requests
+import time
 
 BASE_URL = 'http://localhost:8030/'
 
 def generate_form_data():
     return {
-        'title' : 'test',
-        'day' : '2025-04-19',
+        'title' : 'test1',
+        'day' : '19-04-2025',
         'when' : '17:35',
         'description' : 'Test culone'
     }
@@ -35,3 +36,20 @@ def delete(event_id : int):
     print(res.text)
 
 
+
+
+form_data = generate_form_data()
+
+
+
+start = time.perf_counter()
+
+# STUFF HERE =====
+
+modify(event_id=1, form_data=form_data)
+
+# STUFF HERE =====
+
+end = time.perf_counter()
+elapsed = end - start
+print(f"Elapsed time: {elapsed:.4f} seconds")
