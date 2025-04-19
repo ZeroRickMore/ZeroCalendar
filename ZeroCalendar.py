@@ -201,7 +201,7 @@ def view_month(year, month):
             target_day = date(year, month, day_number)
             day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.day == target_day).count()
     
-    return render_template('index.html', 
+    return render_template('view_month.html', 
                            year=year,
                            month=month,
                            day_numbers=day_numbers_dict,
