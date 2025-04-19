@@ -2,7 +2,6 @@ from flask import Flask, request, render_template
 from models import db, DayEvent
 from parsers import parse_and_get_DayEvent_object_from_dict, get_DayEvent_dict_from_request_form
 from validators import DayEvent_validator
-from datetime import datetime, date, time
 from support import get_user, get_current_timestamp_string
 
 app = Flask(__name__)
@@ -11,6 +10,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app) # Connect to db
     
+# Create db
+with app.app_context():
+    db.create_all()
 
 # ====================================
 #               ROUTES
@@ -68,9 +70,9 @@ def modify_event(event_id):
     if not isinstance(event_id, int):
         raise TypeError(f"event_id must be int: {type(event_id)}")
     
+    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
     
     to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
-    old = to_be_modified_event # TODO DEBUG
 
     if to_be_modified_event is None:
         raise Exception("Event to modify not found...")
@@ -79,7 +81,7 @@ def modify_event(event_id):
 
      # Save old version =============================
     to_be_modified_event.old_version = f'''
-- Titolo: <<{to_be_modified_event.title}>>
+- Titolo: << {to_be_modified_event.title} >>
 - Giorno: {to_be_modified_event.day}
 - Ora: {to_be_modified_event.when}
 - Descrizione:
@@ -89,13 +91,9 @@ def modify_event(event_id):
     to_be_modified_event.last_modified_desc += f"- Modificato da {username} - {get_current_timestamp_string()}\n"
     # ================================================
 
-    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
-
     to_be_modified_event.username = username
     to_be_modified_event.description = input_data['description']
     to_be_modified_event.title = input_data['title']
-    to_be_modified_event.old_version = input_data['old_version']
-    to_be_modified_event.last_modified_desc = input_data['last_modified_desc']
     to_be_modified_event.day = input_data['day']
     to_be_modified_event.when = input_data['when']
 
@@ -105,7 +103,7 @@ def modify_event(event_id):
 
     to_be_modified_event = db.session.get(DayEvent, event_id) # TODO DEBUG
 
-    return {'status': 'success', 'old' : old.__repr__(),'new': to_be_modified_event.__repr__()}, 201
+    return {'status': 'success', 'new': to_be_modified_event.__repr__()}, 201
 
 
 
@@ -124,15 +122,13 @@ def delete_event(event_id):
     
     to_be_deleted_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
-    old = to_be_deleted_event # TODO DEBUG
-
     to_be_deleted_event.deleted = True
 
     db.session.commit()
 
     to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
 
-    return {'status': 'success', 'old' : old.__repr__(),'new': to_be_deleted_event.__repr__()}, 201
+    return {'status': 'success', 'deleted_item ': to_be_deleted_event.__repr__()}, 201
 
 
 
