@@ -20,4 +20,4 @@ class DayEvent(db.Model):
     deleted : bool = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return f'<DayEvent id [ {self.id} ] of user [ {self.username} ] created_at [ {self.created_at} ] of title [ {self.title} ] on day [ {self.day} ] and hour [ {self.when} ], of desc [ {self.description} ], old_version [ {self.old_version} ] and last_modified_desc [ {self.last_modified_desc} ]>'
+        return f'<DayEvent id [ {self.id} ] of user [ {self.username} ] created_at [ {self.created_at} ] of title [ {self.title} ] on day [ {self.day} ] and hour [ {self.when} ], of desc [ {self.description} ], old_version [ {self.old_version} ] and last_modified_desc [ {self.last_modified_desc} ]. Deleted is {self.deleted}>'
