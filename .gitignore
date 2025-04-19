@@ -1,3 +1,4 @@
 sqlite.db
 __pycache__/ZeroCalendar.cpython-312.pyc
 *.pyc
+usernames.json
