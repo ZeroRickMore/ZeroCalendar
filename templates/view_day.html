@@ -9,18 +9,18 @@
 <body>
 
     <div class="banner">
-        Dettagli per il giorno {{ day }}/{{ month }}/{{ year }}
+        Eventi {{ day }}/{{ month }}/{{ year }}
     </div>
 
     <div class="calendar-container">
         {% for item in day_objects %}
-            <div class="day-entry color-{{ loop.index0 % 5 }}" onclick="toggleDetails(this)">
+            <div class="day-entry color-{{ loop.index0 % 3 }}" onclick="toggleDetails(this)">
                 <div class="day-header">
-                    <span>{{ item.when }} - {{ item.title }}</span>
+                    <span>{{ item.when.strftime('%H:%M') }} - {{ item.title }}</span>
                     <span class="arrow">▼</span>
                 </div>
                 <div class="day-details">
-                    <p><strong>Caricato da:</strong> {{ item.username }}</p>
+                    <p>Caricato da: <strong>{{ item.username }}</strong></p>
                     
                     <hr>
                 
