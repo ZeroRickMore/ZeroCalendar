@@ -93,8 +93,8 @@ def modify_event(event_id):
     # ================================================
 
     to_be_modified_event.username = username
-    to_be_modified_event.description = input_data['description']
-    to_be_modified_event.title = input_data['title']
+    to_be_modified_event.description = input_data['description'].capitalize()
+    to_be_modified_event.title = input_data['title'].capitalize()
     to_be_modified_event.day = input_data['day']
     to_be_modified_event.when = input_data['when']
 
@@ -167,9 +167,15 @@ def view_day(day, month, year):
 
     target_day = date(year, month, day)
 
-    events_on_day = db.session.query(DayEvent).filter(DayEvent.day == target_day).all()
+    day_objects = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).order_by('when').all()
 
-    return escape(str(events_on_day) + f'\n\nA TOTAL OF {len(events_on_day)}')
+    # return escape(str(day_objects) + f'\n\nA TOTAL OF {len(day_objects)}')
+    return render_template('view_day.html', 
+                           day=day, 
+                           month=month, 
+                           year=year, 
+                           day_objects=day_objects
+    )
 
 
 @app.route('/')
@@ -199,7 +205,7 @@ def view_month(year, month):
             day_numbers_dict[day_number] = 'A'
         else:
             target_day = date(year, month, day_number)
-            day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.day == target_day).count()
+            day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).count()
     
     return render_template('view_month.html', 
                            year=year,
