@@ -4,6 +4,21 @@
 
 from models import DayEvent
 from validators import DayEvent_validator
+from datetime import datetime
+from support import get_user
+
+def get_DayEvent_dict_from_request_form(form_data):
+    input_data = {
+        'username' : get_user(),
+        'description' : form_data.get('description'),
+        'title' : form_data.get('title'),
+        'old_version' : form_data.get('old_version'),
+        'last_modified_desc' : form_data.get('last_modified_desc'),
+        'day' : datetime.strptime(form_data.get('day'), '%Y-%m-%d').date() if form_data.get('day') else None, # Format day
+        'when' : datetime.strptime(form_data.get('when'), '%H:%M').time() if form_data.get('when') else None, # Format when
+    }
+
+    return input_data
 
 def parse_and_get_DayEvent_object_from_dict(d : dict = None):    
     '''
