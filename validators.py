@@ -43,7 +43,7 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
         print("\nTitle was not given. Taking first 100 char of description for it.")
 
         if len(desc) == 0:
-            raise ValueError(f"\Description or title must be given, they can not be both empty strings!")
+            raise ValueError(f"\nDescription or title must be given, they can not be both empty strings!")
     
         temp = day_event.description
         temp = temp.split(" ")
