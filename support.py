@@ -1,19 +1,17 @@
 from datetime import datetime
+import json
 
-def get_user(catcher = None):
+def get_user(request):
     '''
     Infer the user using usernames.json
     '''
-    # if catcher is None:
-    #     raise Exception("CAUGHT!")
     
-    username = None
-    username = 'TEST'
+    with open("usernames.json", "r") as file:
+        data = json.loads(file)
 
-    if username is None:
-        raise Exception("Fatal error. Who the hell is trying to use the service??!!")
-    
-    return username
+    username = str(data.get(request.remote_addr))
+
+    return username if username is not None else str(request.remote_addr)
 
     
 def get_current_timestamp_string():
