@@ -74,13 +74,17 @@
         return new Promise(resolve => setTimeout(resolve, s*1000));
     }
 
+    function isInEditMode(editForm) {
+        return editForm.classList.contains('show'); // If shown, it's active 
+    }
+
     function toggleDetailsNotOnEdit(entry) {
         entry = entry.closest('.day-entry')
 
         const editForm = entry.querySelector('.edit-form');
         
         // Don't toggle if edit mode is active
-        if (editForm && editForm.style.display === 'block') {
+        if (isInEditMode(editForm)) {
             return;
         }
 
@@ -110,12 +114,20 @@
     }
 
     async function toggleEditForm(icon) {
+        // Order of action changes
         const entry = icon.closest('.day-entry');
-        toggleDetailsNoArrow(entry);
+        const editForm = entry.querySelector('.edit-form');
 
-        const form = entry.querySelector('.edit-form');
-        await sleep(0.3); 
-        form.classList.toggle('show')
+        if (!isInEditMode(editForm)) { 
+            toggleDetailsNoArrow(entry);
+            await sleep(0.3); 
+            editForm.classList.toggle('show');
+
+        } else {
+            editForm.classList.toggle('show');
+            await sleep(0.3); 
+            toggleDetailsNoArrow(entry);   
+        }
     }
 
     function goBack() {
