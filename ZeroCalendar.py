@@ -104,8 +104,9 @@ def modify_event(event_id):
 
     to_be_modified_event = db.session.get(DayEvent, event_id) # TODO DEBUG
 
-    return {'status': 'success', 'new': to_be_modified_event.__repr__()}, 201
+    # return {'status': 'success', 'new': to_be_modified_event.__repr__()}, 201
 
+    return redirect(url_for('view_day', day=to_be_modified_event.day.day, month=to_be_modified_event.day.month, year=to_be_modified_event.day.year))
 
 
 @app.route('/delete_event/<int:event_id>', methods=['GET'])

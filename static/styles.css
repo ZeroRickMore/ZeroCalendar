@@ -396,3 +396,41 @@ textarea[id^="edit-desc-"] {
     height: auto;      /* Auto-expand */
     resize: vertical;  /* Allow vertical resizing */
 }
+
+.button-0 {
+    background-color: #009eb3; /* Darker cyan */
+    color: white;
+    border-color: #009eb3;
+}
+
+.button-1 {
+    background-color: #00796b; /* Darker teal */
+    color: white;
+    border-color: #00796b;
+}
+
+.button-2 {
+    background-color: #388e3c; /* Darker green */
+    color: white;
+    border-color: #388e3c;
+}
+
+.button-0:hover {
+    background-color: #007c91; /* Darker cyan */
+    border-color: #007c91;
+}
+
+.button-1:hover {
+    background-color: #00594d; /* Darker teal */
+    border-color: #00594d;
+}
+
+.button-2:hover {
+    background-color: #2e7d32; /* Darker green */
+    border-color: #2e7d32;
+}
+
+
+.edit-submit {
+    margin-top: 10px;
+}
