@@ -258,7 +258,7 @@ select:hover, .button:hover {
     max-height: 0; /* Hidden by default */
     visibility: hidden; /* Ensure the content is completely invisible */
     overflow: auto;
-    transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
+    transition: opacity 0.3s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
 }
 
 .day-details.show {
@@ -318,7 +318,7 @@ select:hover, .button:hover {
 
     visibility: hidden; /* Ensure the content is completely invisible */
     overflow: auto;
-    transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
+    transition: opacity 0.3s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
 }
 
 .edit-form.show {
