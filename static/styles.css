@@ -488,3 +488,83 @@ input {
     font-size: 0.92rem;
     overflow: auto;
 }
+
+
+/* The overlay and blur effect for the background */
+#background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    backdrop-filter: blur(5px); /* Apply the blur effect */
+    z-index: 999; /* Make sure the overlay appears above other content */
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+}
+
+/* Style for the alert box */
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: #00bcd4; /* Blue background */
+    background-color: white; /* Blue background */
+    color: white;
+    color: black;
+
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; /* Ensure it's above the overlay */
+    display: none; /* Hidden by default */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+}
+
+.alert-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.alert-btn {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.green-btn {
+    background-color: red;
+    color: white;
+}
+
+.red-btn {
+    background-color: #00bcd4;
+    color: white;
+}
+
+/* Show the alert when active */
+.custom-alert.show {
+    display: block;
+}
+
+/* Transition for the alert */
+#cool-alert.show {
+    animation: slide-down 0.3s ease;
+}
+
+@keyframes slide-down {
+    0% {
+        transform: translate(-50%, -100%);
+    }
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
