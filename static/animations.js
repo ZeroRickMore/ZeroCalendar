@@ -68,14 +68,6 @@ async function toggleEditForm(icon) {
     }
 }
 
-function goBack() {
-    window.history.back();
-}
-
-function goForward() {
-    window.history.forward();
-}
-
 function confirmDelete(eventId) {
     if (confirm("Sei sicuro di voler eliminare l'evento?")) {
         window.location.href = `/delete_event/${eventId}`;
