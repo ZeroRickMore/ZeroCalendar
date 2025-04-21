@@ -26,8 +26,7 @@
                 </span>
                 <span class="arrow">▼</span>
             </div>
-            <div class="day-details" onclick="toggleDetailsNotOnEdit(this)">
-                <span class="actual-details">
+                <div class="day-details" onclick="toggleDetailsNotOnEdit(this)">
                     <p>Caricato da: <strong>{{ item.username }}</strong></p>
 
                     <hr>
@@ -45,25 +44,23 @@
                         <p><strong>Modifiche:</strong></p>
                         <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
                     {% endif %}
-                </span> 
-            </div>     
+                </div>     
 
-            <div class="edit-form">
-                <h2>Modifica evento:</h2>
-                <br>
-                <label for="edit-title-{{ loop.index }}">Titolo</label>
-                <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
+                <div class="edit-form">
+                    <h2>Modifica evento:</h2>
+                    <br>
+                    <label for="edit-title-{{ loop.index }}">Titolo</label>
+                    <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
 
-                <label for="edit-time-{{ loop.index }}">Orario</label>
-                <input type="time" id="edit-time-{{ loop.index }}" value="{{ item.when.strftime('%H:%M') }}">
+                    <label for="edit-time-{{ loop.index }}">Orario</label>
+                    <input type="time" id="edit-time-{{ loop.index }}" value="{{ item.when.strftime('%H:%M') }}">
 
-                <label for="edit-date-{{ loop.index }}">Giorno</label>
-                <input type="date" id="edit-date-{{ loop.index }}" value="{{ item.when.strftime('%Y-%m-%d') }}">
+                    <label for="edit-date-{{ loop.index }}">Giorno</label>
+                    <input type="date" id="edit-date-{{ loop.index }}" value="{{ item.when.strftime('%Y-%m-%d') }}">
 
-                <label for="edit-desc-{{ loop.index }}">Descrizione</label>
-                <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
-            </div>
-            
+                    <label for="edit-desc-{{ loop.index }}">Descrizione</label>
+                    <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
+                </div>
         </div>
     {% endfor %}
 </div>
@@ -74,20 +71,19 @@
         return new Promise(resolve => setTimeout(resolve, s*1000));
     }
 
-    function isInEditMode(editForm) {
-        return editForm.classList.contains('show'); // If shown, it's active 
+    function isInEditMode(dayEntry) {
+        return dayEntry.classList.contains('isEditActive'); // If shown, it's active 
     }
 
     function toggleDetailsNotOnEdit(entry) {
         entry = entry.closest('.day-entry')
-
-        const editForm = entry.querySelector('.edit-form');
         
         // Don't toggle if edit mode is active
-        if (isInEditMode(editForm)) {
+        if (isInEditMode(entry)) {
             return;
         }
 
+        const editForm = entry.querySelector('.edit-form');
         const details = entry.querySelector('.day-details');
         const arrow = entry.querySelector('.arrow');
         details.classList.toggle('show');
@@ -118,15 +114,17 @@
         const entry = icon.closest('.day-entry');
         const editForm = entry.querySelector('.edit-form');
 
-        if (!isInEditMode(editForm)) { 
+        if (!isInEditMode(entry)) {  // It was not in edit mode
             toggleDetailsNoArrow(entry);
             await sleep(0.3); 
             editForm.classList.toggle('show');
+            entry.classList.add('isEditActive'); // Put in edit mode, then
 
-        } else {
+        } else { // It was in edit mode
             editForm.classList.toggle('show');
             await sleep(0.3); 
-            toggleDetailsNoArrow(entry);   
+            toggleDetailsNoArrow(entry);
+            entry.classList.remove('isEditActive') // No more edit mode
         }
     }
 

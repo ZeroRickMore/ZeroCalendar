@@ -225,6 +225,11 @@ select:hover, .button:hover {
     transition: all 0.3s ease-in-out;
 }
 
+.day-entry.isEditActive {
+    /*Do nothing*/
+    color: white; /* I hate VSCode warnings for empty fields... */
+} 
+
 .day-header {
     display: flex;
     justify-content: space-between;
@@ -255,13 +260,7 @@ select:hover, .button:hover {
     opacity: 1;
     max-height: 350px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
-    transition: opacity 0.7s ease, max-height 0.7s ease;
-}
 
-.day-details.hide {
-    opacity: 0;
-    max-height: 0px; /* Arbitrary large value for smooth transition */
-    visibility: hidden; /* Make it visible when showing */
     transition: opacity 0.7s ease, max-height 0.7s ease;
 }
 
@@ -309,9 +308,9 @@ select:hover, .button:hover {
     border-radius: 10px;
     line-height: 1.5;
     font-size: 0.92rem;
-
     opacity: 0;
     max-height: 0; /* Hidden by default */
+
     visibility: hidden; /* Ensure the content is completely invisible */
     overflow: auto;
     transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
@@ -321,13 +320,7 @@ select:hover, .button:hover {
     opacity: 1;
     max-height: 350px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
-    transition: opacity 0.7s ease, max-height 0.7s ease;
-}
 
-.edit-form.hide {
-    opacity: 0;
-    max-height: 0px; /* Arbitrary large value for smooth transition */
-    visibility: hidden; /* Make it visible when showing */
     transition: opacity 0.7s ease, max-height 0.7s ease;
 }
 
@@ -359,5 +352,4 @@ select:hover, .button:hover {
     display: flex;
     flex-direction: column;
 }
-
 
