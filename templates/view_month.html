@@ -81,29 +81,16 @@
         </div>
     </div>
 
-    <script>
-        function updateUrl() {
-            const month = document.getElementById('month-select').value;
-            const year = document.getElementById('year-select').value;
-            const url = `/view_month/${year}-${month.padStart(2, '0')}`;
-            window.history.pushState({}, '', url);
-        }
+    <br><br>
+    <hr>
+    <br><br>
 
-        function goToMonth() {
-            const month = document.getElementById('month-select').value;
-            const year = document.getElementById('year-select').value;
-            window.location.href = `/view_month/${year}-${month.padStart(2, '0')}`;
-        }
-    </script>
+    <div class="add-event-button-container">
+        <a href="/add_event" class="add-event-button">+</a>
+    </div>
 
-    <script>
-        function goBack() {
-            window.history.back(); // Go to the previous page in the browser history
-        }
-
-        function goForward() {
-        window.history.forward(); // Go to the next page in the browser history
-        }
-    </script>
+    <script src="{{ url_for('static', filename='view_month.js') }}"></script>
+    <script src="{{ url_for('static', filename='general.js') }}"></script>
+    
 </body>
 </html>
