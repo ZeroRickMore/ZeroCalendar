@@ -26,7 +26,7 @@ def ping():
 #           EVENT MODIFIERS
 # ====================================
 
-@app.route('/add_event', methods=['POST'])
+@app.route('/add_event', methods=['GET', 'POST'])
 def add_event():
     '''
     Add an event, via a POST request
@@ -43,6 +43,10 @@ def add_event():
     The username is inferred from the usernames.json
     '''
 
+    if request.method == 'GET':
+        return render_template('add_event.html', today=datetime.today())
+    
+
     input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
 
     new_day_event : DayEvent = parse_and_get_DayEvent_object_from_dict(d = input_data)
@@ -50,8 +54,8 @@ def add_event():
     db.session.add(new_day_event)
     db.session.commit()
 
-    return {'status': 'success', 'id': new_day_event.id}, 201
-
+    # return {'status': 'success', 'id': new_day_event.id}, 201
+    return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
 
 
 @app.route('/modify_event/<int:event_id>', methods=['POST'])
