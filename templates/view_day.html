@@ -23,6 +23,7 @@
                 <span>
                     {{ item.when.strftime('%H:%M') }} - {{ item.title }}
                     <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
+                    <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }})">🗑️</span>
                 </span>
                 <span class="arrow">▼</span>
             </div>

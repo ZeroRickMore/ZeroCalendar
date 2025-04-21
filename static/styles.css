@@ -439,3 +439,9 @@ textarea[id^="edit-desc-"] {
 input {
     margin-bottom: 10px;
 }
+
+.edit-icon, .delete-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 1rem;
+}
