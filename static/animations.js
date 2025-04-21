@@ -67,9 +67,3 @@ async function toggleEditForm(icon) {
         entry.classList.remove('isEditActive') // No more edit mode
     }
 }
-
-function confirmDelete(eventId) {
-    if (confirm("Sei sicuro di voler eliminare l'evento?")) {
-        window.location.href = `/delete_event/${eventId}`;
-    }
-}
