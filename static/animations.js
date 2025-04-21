@@ -7,7 +7,7 @@ function isEditActive(dayEntry) {
     return dayEntry.classList.contains('isEditActive');
 }
 
-function areDetailsActive(dayEntry) {
+function isDetailsActive(dayEntry) {
     return dayEntry.classList.contains('isDetailsActive');
 }
 // =============================================================================
@@ -22,7 +22,7 @@ function toggleDetails(entry) {
     } else { // If not, just handle the details...
         const details = entry.querySelector('.day-details');   
         details.classList.toggle('show');
-        entry.classList.toggle('isDetailsActive');
+        entry.classList.toggle('isDetailsActive'); // And tell that details are active
     }
 
     const arrow = entry.querySelector('.arrow');
@@ -36,7 +36,7 @@ async function toggleEditForm(icon) {
     const details = entry.querySelector('.day-details');   
 
     if (!isEditActive(entry)) {  // It was not in edit mode
-        if (areDetailsActive(entry)) { // If details were shown
+        if (isDetailsActive(entry)) { // If details were shown
             details.classList.remove('show'); // Then remove them
             await sleep(0.3); // And wait for the animation to end
         }
@@ -45,8 +45,10 @@ async function toggleEditForm(icon) {
 
     } else { // It was in edit mode
         editForm.classList.remove('show');
-        await sleep(0.3);
-        details.classList.add('show');
+        if (isDetailsActive(entry)) {
+            await sleep(0.3);
+            details.classList.add('show');
+        }
         entry.classList.remove('isEditActive') // No more edit mode
     }
 }
