@@ -29,6 +29,8 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
     if not isinstance(desc, str):
         raise TypeError(f"\nDescription is not str: {type(desc)}")
 
+    if len(desc) == 0:
+        raise ValueError(f"\Description cannot be empty string!")
 
     # Title ====================================================
 
@@ -39,6 +41,9 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
     
     if len(title) > 100:
         raise ValueError(f"\nTitle length is too much: {len(title)} > 100.")
+
+    if len(title) == 0:
+        raise ValueError(f"\nTitle cannot be empty string!")
 
     if len(title) == 0:
         print("\nTitle was not given. Taking first 100 char of description for it.")
@@ -70,6 +75,12 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
 
     if not isinstance(day, date):
         raise TypeError(f"\nday is not date: {type(day)}")
+    
+    if day.year < 2025:
+        raise ValueError(f"Year must be >= 2025: {day.year}")
+    
+    if day.year > 2040:
+        raise ValueError(f"Year must be <= 2040: {day.year}")
 
     # When ====================================================
 
@@ -77,5 +88,6 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
 
     if not isinstance(when, time) and when is not None:
         raise TypeError(f"\nwhen is not time nor None: {type(when)}")
+
 
     return True
