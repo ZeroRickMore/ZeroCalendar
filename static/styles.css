@@ -364,3 +364,27 @@ select:hover, .button:hover {
     color:transparent;
     background-color: transparent;
 }
+
+
+.day-info-container {
+    margin: 0px;
+    padding: 0px;
+    max-height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
+}
+
+.day-info-container.showDayDetails {
+    max-height: 350px;
+    visibility: visible;
+    overflow: visible;
+    transition: max-height 0.7s ease;
+}
+
+.day-info-container.showEdit {
+    max-height: 350px;
+    visibility: visible;
+    overflow: visible;
+    transition: max-height 0.7s ease;
+}

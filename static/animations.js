@@ -14,15 +14,23 @@ function isDetailsActive(dayEntry) {
 
 
 function toggleDetails(entry) {
-    entry = entry.closest('.day-entry')
+    entry = entry.closest('.day-entry');
+    container = entry.querySelector('.day-info-container');
 
     if (isEditActive(entry)) { // If in edit mode, just handle the edit form...
         const editForm = entry.querySelector('.edit-form');
         editForm.classList.toggle('show');
-    } else { // If not, just handle the details...
+        container.classList.toggle('showEdit');
+    } else if (isDetailsActive(entry)) { // If not, just handle the details...
         const details = entry.querySelector('.day-details');   
-        details.classList.toggle('show');
-        entry.classList.toggle('isDetailsActive'); // And tell that details are active
+        details.classList.remove('show');
+        entry.classList.remove('isDetailsActive'); // And tell that details are active
+        container.classList.remove('showDayDetails');
+    } else {
+        container.classList.add('showDayDetails');
+        const details = entry.querySelector('.day-details');   
+        details.classList.add('show');
+        entry.classList.add('isDetailsActive'); // And tell that details are active
     }
 
     const arrow = entry.querySelector('.arrow');
@@ -32,6 +40,10 @@ function toggleDetails(entry) {
 async function toggleEditForm(icon) {
     // Order of action changes
     const entry = icon.closest('.day-entry');
+
+    container = entry.querySelector('.day-info-container');
+    container.classList.toggle('showEdit');
+
     const editForm = entry.querySelector('.edit-form');
     const details = entry.querySelector('.day-details');   
 
@@ -46,7 +58,7 @@ async function toggleEditForm(icon) {
     } else { // It was in edit mode
         editForm.classList.remove('show');
 
-        
+
 
         if (isDetailsActive(entry)) {
             await sleep(0.3);

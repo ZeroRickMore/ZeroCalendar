@@ -26,9 +26,9 @@
                 </span>
                 <span class="arrow">▼</span>
             </div>
+            <div class="day-info-container">
                 <div class="day-details">
                     <p>Caricato da: <strong>{{ item.username }}</strong></p>
-
                     <hr>
                     <p><strong>Descrizione:</strong></p>
                     <p style="white-space: pre-wrap;">{{ item.description }}</p>
@@ -61,6 +61,7 @@
                     <label for="edit-desc-{{ loop.index }}">Descrizione</label>
                     <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
                 </div>
+            </div>
         </div>
     {% endfor %}
 </div>
