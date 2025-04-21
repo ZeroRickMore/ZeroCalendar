@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroCalendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to your CSS file -->
+</head>
+
+<body>
+    <!-- Top Banner -->
+    <div class="banner">
+        <button class="back-button" onclick="goBack()">⏪</button>
+        <a href="/">ZeroCalendar</a>
+        <button class="forward-button" onclick="goForward()">⏩</button>
+    </div>
+
+
+    <div class="calendar-container">
+
+            <div class="day-entry color-0">
+                <div class="day-header">
+                    Inserisci nuovo evento:
+                    
+                </div>
+                <div class="day-info-container"></div>
+                <div class="insert-form">
+                    <form action="/add_event" method="POST">
+                        <label for="edit-title-0">Titolo</label>
+                        <input type="text" id="edit-title-0" name="title" placeholder="Inserisci titolo">
+    
+                        <span class="small-divisor"></span>
+    
+                        <label for="edit-date-0">Giorno</label>
+                        <input type="date" id="edit-date-0" name="day" value="{{ today.strftime('%Y-%m-%d') }}">
+    
+                        <span class="small-divisor"></span>
+    
+                        <label>Orario</label>
+                        <div class="time-select">
+                            <select name="edit-hour" id="edit-hour-0">
+                                {% for h in range(0, 24) %}
+                                    <option value="{{ "%02d" % h }}" {% if "%02d" % h == "12" %}selected{% endif %}>{{ "%02d" % h }}</option>
+                                {% endfor %}
+                            </select>
+                            :
+                            <select name="edit-minute" id="edit-minute-0">
+                                {% for m in range(0, 60) %}
+                                    <option value="{{ "%02d" % m }}" {% if "%02d" % m == "00" %}selected{% endif %}>{{ "%02d" % m }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                
+                        <span class="small-divisor"></span>
+    
+                        <label for="edit-desc-0">Descrizione</label>
+                        <textarea id="edit-desc-0" name="description" placeholder="Inserisci una descrizione"></textarea>
+                
+                        <br>
+                        <!-- Submit Button -->
+                        <button type="submit" class="button button-0 edit-submit">Inserisci Evento</button>
+    
+                    </form>
+                </div>
+            </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='general.js') }}"></script>
+
+</body>
+</html>
