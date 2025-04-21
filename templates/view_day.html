@@ -27,46 +27,50 @@
                 <span class="arrow">▼</span>
             </div>
             <div class="day-details" onclick="toggleDetailsNotOnEdit(this)">
-                <p>Caricato da: <strong>{{ item.username }}</strong></p>
+                <span class="actual-details">
+                    <p>Caricato da: <strong>{{ item.username }}</strong></p>
 
-                <hr>
-
-                <p style="white-space: pre-wrap;">{{ item.description }}</p>
-
-                {% if item.old_version != 'Nessuna versione precedente' %}
                     <hr>
-                    <p><strong>Versione precedente:</strong></p>
-                    <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
-                {% endif %}
 
-                {% if item.last_modified_desc != '' %}
-                    <hr>
-                    <p><strong>Modifiche:</strong></p>
-                    <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
-                {% endif %}
+                    <p style="white-space: pre-wrap;">{{ item.description }}</p>
 
-                <div class="edit-form">
-                    <hr>
-                    <label for="edit-title-{{ loop.index }}">Titolo</label>
-                    <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
+                    {% if item.old_version != 'Nessuna versione precedente' %}
+                        <hr>
+                        <p><strong>Versione precedente:</strong></p>
+                        <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
+                    {% endif %}
 
-                    <label for="edit-time-{{ loop.index }}">Orario</label>
-                    <input type="time" id="edit-time-{{ loop.index }}" value="{{ item.when.strftime('%H:%M') }}">
+                    {% if item.last_modified_desc != '' %}
+                        <hr>
+                        <p><strong>Modifiche:</strong></p>
+                        <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
+                    {% endif %}
+                </span> 
+            </div>     
 
-                    <label for="edit-date-{{ loop.index }}">Giorno</label>
-                    <input type="date" id="edit-date-{{ loop.index }}" value="{{ item.when.strftime('%Y-%m-%d') }}">
+            <div class="edit-form">
+                <h2>Modifica evento:</h2>
+                <br>
+                <label for="edit-title-{{ loop.index }}">Titolo</label>
+                <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
 
-                    <label for="edit-desc-{{ loop.index }}">Descrizione</label>
-                    <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
-                </div>
+                <label for="edit-time-{{ loop.index }}">Orario</label>
+                <input type="time" id="edit-time-{{ loop.index }}" value="{{ item.when.strftime('%H:%M') }}">
+
+                <label for="edit-date-{{ loop.index }}">Giorno</label>
+                <input type="date" id="edit-date-{{ loop.index }}" value="{{ item.when.strftime('%Y-%m-%d') }}">
+
+                <label for="edit-desc-{{ loop.index }}">Descrizione</label>
+                <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
             </div>
+            
         </div>
     {% endfor %}
 </div>
 
 <script>
     function toggleDetailsNotOnEdit(entry) {
-        entry = entry.parentElement
+        entry = entry.closest('.day-entry')
 
         const editForm = entry.querySelector('.edit-form');
         
@@ -82,17 +86,28 @@
     }
 
     function toggleDetails(entry) {
-        entry = entry.parentElement
-
-        const editForm = entry.querySelector('.edit-form');
+        entry = entry.closest('.day-entry')
+        
         const details = entry.querySelector('.day-details');
+
         const arrow = entry.querySelector('.arrow');
         details.classList.toggle('show');
         arrow.classList.toggle('rotate');
     }
 
+    function toggleDetailsNoArrow(entry) {
+        entry = entry.closest('.day-entry')
+
+        const editForm = entry.querySelector('.edit-form');
+        const details = entry.querySelector('.day-details');
+
+        details.classList.toggle('show');
+    }
+
     function toggleEditForm(icon) {
         const entry = icon.closest('.day-entry');
+        toggleDetailsNoArrow(entry);
+
         const form = entry.querySelector('.edit-form');
         form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
     }

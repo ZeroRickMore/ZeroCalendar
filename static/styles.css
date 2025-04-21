@@ -255,7 +255,7 @@ select:hover, .button:hover {
     opacity: 1;
     max-height: 350px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
-    transition: opacity 1.6s ease, max-height 1.7s ease;
+    transition: opacity 0.7s ease, max-height 0.7s ease;
 }
 
 .day-details p {
@@ -295,6 +295,17 @@ select:hover, .button:hover {
 .edit-form {
     display: none;
     margin-top: 10px;
+    border: 1px solid black;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.3); /* soft translucent bg */
+    color: #222; /* solid, readable text */
+    padding: 12px 15px;
+    margin-top: 10px;
+    border-radius: 10px;
+    line-height: 1.5;
+    font-size: 0.92rem;
+    overflow: auto;
+    transition: opacity 0.4s ease, max-height 0.4s ease, visibility 0s linear 0.4s; /* Smooth transition */
 }
 .edit-icon {
     cursor: pointer;
