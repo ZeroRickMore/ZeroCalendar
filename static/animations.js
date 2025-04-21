@@ -45,6 +45,9 @@ async function toggleEditForm(icon) {
 
     } else { // It was in edit mode
         editForm.classList.remove('show');
+
+        
+
         if (isDetailsActive(entry)) {
             await sleep(0.3);
             details.classList.add('show');
