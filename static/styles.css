@@ -24,6 +24,11 @@ body {
     position: relative; /* To position the buttons inside the banner */
 }
 
+.banner a {
+    text-decoration: none;
+    color: white;
+}
+
 .back-button, .forward-button {
     position: absolute;
     top: 50%; /* Vertically center the buttons */
