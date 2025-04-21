@@ -26,7 +26,7 @@
                 </span>
                 <span class="arrow">▼</span>
             </div>
-                <div class="day-details" onclick="toggleDetailsNotOnEdit(this)">
+                <div class="day-details" onclick="toggleDetails(this)">
                     <p>Caricato da: <strong>{{ item.username }}</strong></p>
 
                     <hr>
@@ -65,77 +65,9 @@
     {% endfor %}
 </div>
 
-<script>
+<div class="filler"></div>
 
-    function sleep(s) {
-        return new Promise(resolve => setTimeout(resolve, s*1000));
-    }
-
-    function isInEditMode(dayEntry) {
-        return dayEntry.classList.contains('isEditActive'); // If shown, it's active 
-    }
-
-    function toggleDetailsNotOnEdit(entry) {
-        entry = entry.closest('.day-entry')
-        
-        // Don't toggle if edit mode is active
-        if (isInEditMode(entry)) {
-            return;
-        }
-
-        const editForm = entry.querySelector('.edit-form');
-        const details = entry.querySelector('.day-details');
-        const arrow = entry.querySelector('.arrow');
-        details.classList.toggle('show');
-        arrow.classList.toggle('rotate');
-    }
-
-    function toggleDetails(entry) {
-        entry = entry.closest('.day-entry')
-        
-        const details = entry.querySelector('.day-details');
-
-        const arrow = entry.querySelector('.arrow');
-        details.classList.toggle('show');
-        arrow.classList.toggle('rotate');
-    }
-
-    function toggleDetailsNoArrow(entry) {
-        entry = entry.closest('.day-entry')
-
-        const editForm = entry.querySelector('.edit-form');
-        const details = entry.querySelector('.day-details');
-
-        details.classList.toggle('show');
-    }
-
-    async function toggleEditForm(icon) {
-        // Order of action changes
-        const entry = icon.closest('.day-entry');
-        const editForm = entry.querySelector('.edit-form');
-
-        if (!isInEditMode(entry)) {  // It was not in edit mode
-            toggleDetailsNoArrow(entry);
-            await sleep(0.3); 
-            editForm.classList.toggle('show');
-            entry.classList.add('isEditActive'); // Put in edit mode, then
-
-        } else { // It was in edit mode
-            editForm.classList.toggle('show');
-            await sleep(0.3); 
-            toggleDetailsNoArrow(entry);
-            entry.classList.remove('isEditActive') // No more edit mode
-        }
-    }
-
-    function goBack() {
-        window.history.back();
-    }
-
-    function goForward() {
-        window.history.forward();
-    }
-</script>
+<script src="{{ url_for('static', filename='animations.js') }}"></script>
 
 </body>
 </html>
