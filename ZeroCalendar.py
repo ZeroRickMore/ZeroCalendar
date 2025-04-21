@@ -58,6 +58,27 @@ def add_event():
     return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
 
 
+@app.route('/add_event/<int:year>-<int:month>-<int:day>', methods=['GET'])
+def add_event_of_day(year, month, day):
+    '''
+    Add an event, via a POST request
+    containing:
+
+        username,
+        title,
+        day,
+        when,
+        description,
+        old_version,
+        last_modified_desc,
+    
+    The username is inferred from the usernames.json
+    '''
+    if not isinstance(year, int) or not isinstance(month, int) or not isinstance(day, int):
+        raise TypeError(f"All must be int: {type(year)}, {type(month)}, {type(day)}")
+
+    return render_template('add_event.html', today=datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d").date())
+
 @app.route('/modify_event/<int:event_id>', methods=['POST'])
 def modify_event(event_id):
     '''

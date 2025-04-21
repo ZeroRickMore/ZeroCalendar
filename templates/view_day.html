@@ -16,6 +16,10 @@
 
 <h1>Eventi {{ day }}/{{ month }}/{{ year }}</h1>
 
+<div class="add-event-button-container">
+    <a href="/add_event/{{ year }}-{{ month }}-{{ day }}" class="add-event-button">+</a>
+</div>
+
 <div class="calendar-container">
     {% for item in day_objects %}
         <div class="day-entry color-{{ loop.index0 % 3 }}">
@@ -103,6 +107,7 @@
         <button id="dismiss-btn" class="alert-btn red-btn">No, annulla</button>
     </div>
 </div>
+
 
 <div class="filler"></div>
 
