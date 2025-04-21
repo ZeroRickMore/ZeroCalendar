@@ -53,13 +53,31 @@
                     <br>
                     <label for="edit-title-{{ loop.index }}">Titolo</label>
                     <input type="text" id="edit-title-{{ loop.index }}" name="title" value="{{ item.title }}">
-            
-                    <label for="edit-time-{{ loop.index }}">Orario</label>
-                    <input type="time" id="edit-time-{{ loop.index }}" name="when" value="{{ item.when.strftime('%H:%M') }}">
-            
+
+                    <span class="small-divisor"></span>
+
                     <label for="edit-date-{{ loop.index }}">Giorno</label>
                     <input type="date" id="edit-date-{{ loop.index }}" name="day" value="{{ item.day.strftime('%Y-%m-%d') }}">
+
+                    <span class="small-divisor"></span>
+
+                    <label>Orario</label>
+                    <div class="time-select">
+                        <select name="edit-hour" id="edit-hour-{{ loop.index }}">
+                            {% for h in range(0, 24) %}
+                                <option value="{{ "%02d" % h }}" {% if "%02d" % h == "12" %}selected{% endif %}>{{ "%02d" % h }}</option>
+                            {% endfor %}
+                        </select>
+                        :
+                        <select name="edit-minute" id="edit-minute-{{ loop.index }}">
+                            {% for m in range(0, 60) %}
+                                <option value="{{ "%02d" % m }}" {% if "%02d" % m == "00" %}selected{% endif %}>{{ "%02d" % m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
             
+                    <span class="small-divisor"></span>
+
                     <label for="edit-desc-{{ loop.index }}">Descrizione</label>
                     <textarea id="edit-desc-{{ loop.index }}" name="description">{{ item.description }}</textarea>
             
