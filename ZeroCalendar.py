@@ -47,7 +47,7 @@ def add_event():
         return render_template('add_event.html', today=datetime.today())
     
 
-    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
+    input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
 
     new_day_event : DayEvent = parse_and_get_DayEvent_object_from_dict(d = input_data)
     
@@ -98,14 +98,14 @@ def modify_event(event_id):
     if not isinstance(event_id, int):
         raise TypeError(f"event_id must be int: {type(event_id)}")
     
-    input_data = get_DayEvent_dict_from_request_form(form_data=request.form)
+    input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
     
     to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
     if to_be_modified_event is None:
         raise Exception("Event to modify not found...")
 
-    username = get_user()
+    username = get_user(request=request)
 
      # Save old version =============================
     to_be_modified_event.old_version = f'''- Titolo: << {to_be_modified_event.title} >>

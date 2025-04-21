@@ -7,7 +7,7 @@ from validators import DayEvent_validator
 from datetime import datetime
 from support import get_user
 
-def get_DayEvent_dict_from_request_form(form_data : dict):
+def get_DayEvent_dict_from_request_form(form_data : dict, request):
     if not isinstance(form_data, dict):
         raise TypeError(f"form_data must be dict, not {type(form_data)}")
     
@@ -17,7 +17,7 @@ def get_DayEvent_dict_from_request_form(form_data : dict):
         hour = None
 
     input_data = {
-        'username' : get_user(),
+        'username' : get_user(request=request),
         'description' : form_data.get('description'),
         'title' : form_data.get('title'),
         'old_version' : form_data.get('old_version') if form_data.get('old_version') is not None else 'Nessuna versione precedente',

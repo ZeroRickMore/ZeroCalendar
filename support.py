@@ -7,11 +7,11 @@ def get_user(request):
     '''
     
     with open("usernames.json", "r") as file:
-        data = json.loads(file)
+        data = json.load(file)
 
-    username = str(data.get(request.remote_addr))
+    username = data.get(request.remote_addr)
 
-    return username if username is not None else str(request.remote_addr)
+    return str(username) if username is not None else str(request.remote_addr)
 
     
 def get_current_timestamp_string():
