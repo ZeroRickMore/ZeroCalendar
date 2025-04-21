@@ -345,22 +345,6 @@ select:hover, .button:hover {
     font-weight: bold;
 }
 
-.time-date-wrapper {
-    display: flex;
-    gap: 10px;  /* Space between the two input fields */
-    margin-top: 10px;
-}
-
-.form-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group label {
-    font-weight: bold;
-}
-
 .filler {
     height:950px;
     color:transparent;
@@ -433,4 +417,25 @@ textarea[id^="edit-desc-"] {
 
 .edit-submit {
     margin-top: 10px;
+}
+
+
+.time-select {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.time-select select {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    background-color: white;
+    color: black;
+}
+
+input {
+    margin-bottom: 10px;
 }
