@@ -194,20 +194,27 @@ def view_month(year, month):
 
     _, day_number = calendar.monthrange(year, month)
     first_weekday_index = calendar.weekday(year, month, 1)
+    
+    today = datetime.today()
+    current_year = today.year
+    current_month = today.month
+    should_check_past = (current_year == year) and (current_month == month)
 
-    day_numbers = [50+_ for _ in range(first_weekday_index)]+[i for i in range(1, day_number+1)] # Skip to fit monday in column
+    day_numbers = [50+_ for _ in range(first_weekday_index)] + [i for i in range(1, day_number+1)] # Skip to fit monday in column
 
     day_numbers_dict = {}
 
     for day_number in day_numbers:
         if day_number >= 50 : # Days to skip
             day_numbers_dict[day_number] = None
-        elif day_number < datetime.today().day: # Past day
+        elif should_check_past and day_number < datetime.today().day: # Past day and I should check for it
             day_numbers_dict[day_number] = 'A'
         else:
             target_day = date(year, month, day_number)
             day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).count()
     
+    print(day_numbers_dict)
+
     return render_template('view_month.html', 
                            year=year,
                            month=month,
