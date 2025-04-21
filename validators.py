@@ -29,9 +29,6 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
     if not isinstance(desc, str):
         raise TypeError(f"\nDescription is not str: {type(desc)}")
 
-    if len(desc) == 0:
-        raise ValueError(f"\Description cannot be empty string!")
-
     # Title ====================================================
 
     title = day_event.title
@@ -43,10 +40,11 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
         raise ValueError(f"\nTitle length is too much: {len(title)} > 100.")
 
     if len(title) == 0:
-        raise ValueError(f"\nTitle cannot be empty string!")
-
-    if len(title) == 0:
         print("\nTitle was not given. Taking first 100 char of description for it.")
+
+        if len(desc) == 0:
+            raise ValueError(f"\Description or title must be given, they can not be both empty strings!")
+    
         temp = day_event.description
         temp = temp.split(" ")
         for word in temp:
