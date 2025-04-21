@@ -25,9 +25,16 @@
         <div class="day-entry color-{{ loop.index0 % 3 }}">
             <div class="day-header" onclick="toggleDetails(this)">
                 <div class="header-top">
-                    <span class="event-time">{{ item.when.strftime('%H:%M') }}</span>
-                    <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
-                    <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }}, '{{ item.title }}')">🗑️</span>
+                    <span class="time-stamp">
+                        <img src="{{ url_for('static', filename='images/clock_background.png') }}" alt="Time" class="digital-clock-bg">
+                        <span class="time-text">{{ item.when.strftime('%H:%M') }}</span>
+                    </span>
+                    <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">
+                        <img src="{{ url_for('static', filename='images/pencil.png') }}" alt="✏️" class="icon-img">
+                    </span>
+                    <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }}, '{{ item.title }}')">
+                        <img src="{{ url_for('static', filename='images/trash.png') }}" alt="🗑️" class="icon-img">
+                    </span>
                 </div>
                 <div class="header-separator"></div>
                 <div class="event-title">{{ item.title }}</div>
