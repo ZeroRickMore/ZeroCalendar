@@ -26,11 +26,11 @@
                 </span>
                 <span class="arrow">▼</span>
             </div>
-                <div class="day-details" onclick="toggleDetails(this)">
+                <div class="day-details">
                     <p>Caricato da: <strong>{{ item.username }}</strong></p>
 
                     <hr>
-
+                    <p><strong>Descrizione:</strong></p>
                     <p style="white-space: pre-wrap;">{{ item.description }}</p>
 
                     {% if item.old_version != 'Nessuna versione precedente' %}
@@ -44,10 +44,10 @@
                         <p><strong>Modifiche:</strong></p>
                         <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
                     {% endif %}
-                </div>     
+                </div>
 
                 <div class="edit-form">
-                    <h2>Modifica evento:</h2>
+                    <h3>Modifica evento:</h3>
                     <br>
                     <label for="edit-title-{{ loop.index }}">Titolo</label>
                     <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
