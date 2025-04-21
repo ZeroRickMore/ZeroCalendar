@@ -10,6 +10,11 @@ from support import get_user
 def get_DayEvent_dict_from_request_form(form_data : dict):
     if not isinstance(form_data, dict):
         raise TypeError(f"form_data must be dict, not {type(form_data)}")
+    
+    try:
+        hour = datetime.strptime(form_data.get('edit-hour')+':'+form_data.get('edit-minute'), '%H:%M').time()
+    except:
+        hour = None
 
     input_data = {
         'username' : get_user(),
@@ -18,7 +23,7 @@ def get_DayEvent_dict_from_request_form(form_data : dict):
         'old_version' : form_data.get('old_version') if form_data.get('old_version') is not None else 'Nessuna versione precedente',
         'last_modified_desc' : form_data.get('last_modified_desc') if form_data.get('last_modified_desc') is not None else '',
         'day' : datetime.strptime(form_data.get('day'), '%Y-%m-%d').date() if form_data.get('day') else None, # Format day
-        'when' : datetime.strptime(form_data.get('when'), '%H:%M').time() if form_data.get('when') else None, # Format when
+        'when' : hour if hour is not None else (datetime.strptime(form_data.get('when'), '%H:%M').time() if form_data.get('when') else None), # Format when
     }
 
     return input_data
