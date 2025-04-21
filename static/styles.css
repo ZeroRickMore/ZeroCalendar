@@ -230,6 +230,11 @@ select:hover, .button:hover {
     color: white; /* I hate VSCode warnings for empty fields... */
 } 
 
+.day-entry.isDetailsActive {
+    /*Do nothing*/
+    color: white; /* I hate VSCode warnings for empty fields... */
+} 
+
 .day-header {
     display: flex;
     justify-content: space-between;
@@ -353,3 +358,8 @@ select:hover, .button:hover {
     flex-direction: column;
 }
 
+.filler {
+    height:950px;
+    color:transparent;
+    background-color: transparent;
+}
