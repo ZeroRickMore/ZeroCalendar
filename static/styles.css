@@ -321,7 +321,7 @@ select:hover, .button:hover {
 
 .edit-form.show {
     opacity: 1;
-    max-height: 350px; /* Arbitrary large value for smooth transition */
+    max-height: 500px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
 
     transition: opacity 0.7s ease, max-height 0.7s ease;
@@ -347,7 +347,7 @@ select:hover, .button:hover {
 
 .time-date-wrapper {
     display: flex;
-    gap: 10px;
+    gap: 10px;  /* Space between the two input fields */
     margin-top: 10px;
 }
 
@@ -355,6 +355,10 @@ select:hover, .button:hover {
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
 }
 
 .filler {
@@ -381,8 +385,14 @@ select:hover, .button:hover {
 }
 
 .day-info-container.showEdit {
-    max-height: 350px;
+    max-height: 500px;
     visibility: visible;
     overflow: visible;
     transition: max-height 0.7s ease;
+}
+
+textarea[id^="edit-desc-"] {
+    min-height: 100px; /* Minimum height */
+    height: auto;      /* Auto-expand */
+    resize: vertical;  /* Allow vertical resizing */
 }
