@@ -332,9 +332,11 @@ select:hover, .button:hover {
     cursor: pointer;
     margin-left: 10px;
 }
+
 .rotate {
     transform: rotate(180deg);
 }
+
 .day-entry input, .day-entry textarea {
     width: 100%;
     margin-top: 5px;
@@ -444,4 +446,45 @@ input {
     cursor: pointer;
     margin-left: 10px;
     font-size: 1rem;
+}
+
+.add-event-button-container {
+    display: flex;
+    justify-content: center; /* This centers the button horizontally */
+    margin-top: 20px;
+}
+
+.add-event-button {
+    font-size: 40px;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.add-event-button:hover {
+    background-color: #45a049;
+}
+
+
+
+.insert-form {
+    border: 1px solid black;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.3); /* soft translucent bg */
+    color: #222; /* solid, readable text */
+    padding: 12px 15px;
+    margin-top: 10px;
+    border-radius: 10px;
+    line-height: 1.5;
+    font-size: 0.92rem;
+    overflow: auto;
 }
