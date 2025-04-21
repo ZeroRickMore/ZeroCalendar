@@ -89,5 +89,10 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
     if not isinstance(when, time) and when is not None:
         raise TypeError(f"\nwhen is not time nor None: {type(when)}")
 
+    if when.hour not in range(0, 24):
+        raise ValueError(f"Hour must be in 0-23 range: {when.hour}")
+    
+    if when.minute not in range(0, 60):
+        raise ValueError(f"Min must be in 0-59 range: {when.minute}")
 
     return True
