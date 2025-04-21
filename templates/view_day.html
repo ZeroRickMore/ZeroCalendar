@@ -18,15 +18,15 @@
 
 <div class="calendar-container">
     {% for item in day_objects %}
-        <div class="day-entry color-{{ loop.index0 % 3 }}" onclick="toggleDetails(this)">
-            <div class="day-header">
+        <div class="day-entry color-{{ loop.index0 % 3 }}">
+            <div class="day-header" onclick="toggleDetails(this)">
                 <span>
                     {{ item.when.strftime('%H:%M') }} - {{ item.title }}
                     <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
                 </span>
                 <span class="arrow">▼</span>
             </div>
-            <div class="day-details">
+            <div class="day-details" onclick="toggleDetailsNotOnEdit(this)">
                 <p>Caricato da: <strong>{{ item.username }}</strong></p>
 
                 <hr>
@@ -65,7 +65,9 @@
 </div>
 
 <script>
-    function toggleDetails(entry) {
+    function toggleDetailsNotOnEdit(entry) {
+        entry = entry.parentElement
+
         const editForm = entry.querySelector('.edit-form');
         
         // Don't toggle if edit mode is active
@@ -73,6 +75,16 @@
             return;
         }
 
+        const details = entry.querySelector('.day-details');
+        const arrow = entry.querySelector('.arrow');
+        details.classList.toggle('show');
+        arrow.classList.toggle('rotate');
+    }
+
+    function toggleDetails(entry) {
+        entry = entry.parentElement
+
+        const editForm = entry.querySelector('.edit-form');
         const details = entry.querySelector('.day-details');
         const arrow = entry.querySelector('.arrow');
         details.classList.toggle('show');
