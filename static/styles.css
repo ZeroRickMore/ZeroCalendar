@@ -52,9 +52,8 @@ body {
 }
 
 .back-button:hover, .forward-button:hover {
-    background-color: #00bcd4;
+    background-color: #00ff04;
     color: white;
-    border-color: #00bcd4;
 }
 
 /* Calendar Container */
@@ -88,9 +87,12 @@ select:focus, .button:focus {
 }
 
 select:hover, .button:hover {
+    /*
     background-color: #00bcd4;
     color: white;
     border-color: #00bcd4;
+    */
+    scale: 1.085;
 }
 
 .button {
