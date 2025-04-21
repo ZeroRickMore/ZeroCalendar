@@ -258,6 +258,13 @@ select:hover, .button:hover {
     transition: opacity 0.7s ease, max-height 0.7s ease;
 }
 
+.day-details.hide {
+    opacity: 0;
+    max-height: 0px; /* Arbitrary large value for smooth transition */
+    visibility: hidden; /* Make it visible when showing */
+    transition: opacity 0.7s ease, max-height 0.7s ease;
+}
+
 .day-details p {
     margin: 6px 0;
 }
@@ -314,6 +321,13 @@ select:hover, .button:hover {
     opacity: 1;
     max-height: 350px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
+    transition: opacity 0.7s ease, max-height 0.7s ease;
+}
+
+.edit-form.hide {
+    opacity: 0;
+    max-height: 0px; /* Arbitrary large value for smooth transition */
+    visibility: hidden; /* Make it visible when showing */
     transition: opacity 0.7s ease, max-height 0.7s ease;
 }
 

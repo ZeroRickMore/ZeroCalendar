@@ -69,6 +69,11 @@
 </div>
 
 <script>
+
+    function sleep(s) {
+        return new Promise(resolve => setTimeout(resolve, s*1000));
+    }
+
     function toggleDetailsNotOnEdit(entry) {
         entry = entry.closest('.day-entry')
 
@@ -104,12 +109,12 @@
         details.classList.toggle('show');
     }
 
-    function toggleEditForm(icon) {
+    async function toggleEditForm(icon) {
         const entry = icon.closest('.day-entry');
         toggleDetailsNoArrow(entry);
 
         const form = entry.querySelector('.edit-form');
-        //form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
+        await sleep(0.3); 
         form.classList.toggle('show')
     }
 
