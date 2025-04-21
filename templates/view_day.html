@@ -10,9 +10,11 @@
 
     <div class="banner">
         <button class="back-button" onclick="goBack()">⏪</button>
-        Eventi {{ day }}/{{ month }}/{{ year }}
+        <a href="/">ZeroCalendar</a>
         <button class="forward-button" onclick="goForward()">⏩</button>
     </div>
+
+    <h1>Eventi {{ day }}/{{ month }}/{{ year }}</h1>
 
     <div class="calendar-container">
         {% for item in day_objects %}
