@@ -8,64 +8,91 @@
 </head>
 <body>
 
-    <div class="banner">
-        <button class="back-button" onclick="goBack()">⏪</button>
-        <a href="/">ZeroCalendar</a>
-        <button class="forward-button" onclick="goForward()">⏩</button>
-    </div>
+<div class="banner">
+    <button class="back-button" onclick="goBack()">⏪</button>
+    <a href="/">ZeroCalendar</a>
+    <button class="forward-button" onclick="goForward()">⏩</button>
+</div>
 
-    <h1>Eventi {{ day }}/{{ month }}/{{ year }}</h1>
+<h1>Eventi {{ day }}/{{ month }}/{{ year }}</h1>
 
-    <div class="calendar-container">
-        {% for item in day_objects %}
-            <div class="day-entry color-{{ loop.index0 % 3 }}" onclick="toggleDetails(this)">
-                <div class="day-header">
-                    <span>{{ item.when.strftime('%H:%M') }} - {{ item.title }}</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="day-details">
-                    <p>Caricato da: <strong>{{ item.username }}</strong></p>
-                    
+<div class="calendar-container">
+    {% for item in day_objects %}
+        <div class="day-entry color-{{ loop.index0 % 3 }}" onclick="toggleDetails(this)">
+            <div class="day-header">
+                <span>
+                    {{ item.when.strftime('%H:%M') }} - {{ item.title }}
+                    <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
+                </span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="day-details">
+                <p>Caricato da: <strong>{{ item.username }}</strong></p>
+
+                <hr>
+
+                <p style="white-space: pre-wrap;">{{ item.description }}</p>
+
+                {% if item.old_version != 'Nessuna versione precedente' %}
                     <hr>
-                
-                    <p style="white-space: pre-wrap;">{{ item.description }}</p>
-                
-                    {% if item.old_version != 'Nessuna versione precedente' %}
-                        <hr>
-                        <p><strong>Versione precedente:</strong></p>
-                        <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
-                    {% endif %}
-                
-                    {% if item.last_modified_desc != '' %}
-                        <hr>
-                        <p><strong>Modifiche:</strong></p>
-                        <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
-                    {% endif %}
+                    <p><strong>Versione precedente:</strong></p>
+                    <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
+                {% endif %}
+
+                {% if item.last_modified_desc != '' %}
+                    <hr>
+                    <p><strong>Modifiche:</strong></p>
+                    <p style="white-space: pre-wrap;">{{ item.last_modified_desc }}</p>
+                {% endif %}
+
+                <div class="edit-form">
+                    <hr>
+                    <label for="edit-title-{{ loop.index }}">Titolo</label>
+                    <input type="text" id="edit-title-{{ loop.index }}" value="{{ item.title }}">
+
+                    <label for="edit-time-{{ loop.index }}">Orario</label>
+                    <input type="time" id="edit-time-{{ loop.index }}" value="{{ item.when.strftime('%H:%M') }}">
+
+                    <label for="edit-date-{{ loop.index }}">Giorno</label>
+                    <input type="date" id="edit-date-{{ loop.index }}" value="{{ item.when.strftime('%Y-%m-%d') }}">
+
+                    <label for="edit-desc-{{ loop.index }}">Descrizione</label>
+                    <textarea id="edit-desc-{{ loop.index }}">{{ item.description }}</textarea>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    {% endfor %}
+</div>
 
-    <script>
-        function toggleDetails(entry) {
-            const details = entry.querySelector('.day-details');
-            const arrow = entry.querySelector('.arrow');
-
-            // Toggle the 'show' class for smooth transition
-            details.classList.toggle('show');
-            arrow.classList.toggle('rotate');
-        }
-    </script>
-
-    <script>
-        function goBack() {
-            window.history.back(); // Go to the previous page in the browser history
+<script>
+    function toggleDetails(entry) {
+        const editForm = entry.querySelector('.edit-form');
+        
+        // Don't toggle if edit mode is active
+        if (editForm && editForm.style.display === 'block') {
+            return;
         }
 
-        function goForward() {
-        window.history.forward(); // Go to the next page in the browser history
-        }
-    </script>
+        const details = entry.querySelector('.day-details');
+        const arrow = entry.querySelector('.arrow');
+        details.classList.toggle('show');
+        arrow.classList.toggle('rotate');
+    }
+
+    function toggleEditForm(icon) {
+        const entry = icon.closest('.day-entry');
+        const form = entry.querySelector('.edit-form');
+        form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+    function goForward() {
+        window.history.forward();
+    }
+</script>
 
 </body>
 </html>

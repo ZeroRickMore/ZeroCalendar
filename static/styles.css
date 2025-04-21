@@ -214,6 +214,7 @@ select:hover, .button:hover {
 
 
 
+
 .day-entry {
     padding: 15px 20px;
     margin: 15px auto;
@@ -252,7 +253,7 @@ select:hover, .button:hover {
 
 .day-details.show {
     opacity: 1;
-    max-height: 270px; /* Arbitrary large value for smooth transition */
+    max-height: 350px; /* Arbitrary large value for smooth transition */
     visibility: visible; /* Make it visible when showing */
     transition: opacity 1.6s ease, max-height 1.7s ease;
 }
@@ -284,3 +285,44 @@ select:hover, .button:hover {
 .color-0 { background-color: #00bcd4; }
 .color-1 { background-color: #009688; }
 .color-2 { background-color: #4caf50; }
+
+
+
+/*============================================================================================================*/
+
+
+
+.edit-form {
+    display: none;
+    margin-top: 10px;
+}
+.edit-icon {
+    cursor: pointer;
+    margin-left: 10px;
+}
+.rotate {
+    transform: rotate(180deg);
+}
+.day-entry input, .day-entry textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.day-entry label {
+    font-weight: bold;
+}
+
+.time-date-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
