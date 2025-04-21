@@ -51,7 +51,7 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
             test = day_event.title + word
             if len(test) > 100:
                 break
-            day_event.title += word
+            day_event.title += word + ' '
 
     # Old_version ====================================================
 
