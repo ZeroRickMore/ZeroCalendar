@@ -23,7 +23,7 @@
                 <span>
                     {{ item.when.strftime('%H:%M') }} - {{ item.title }}
                     <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
-                    <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }})">🗑️</span>
+                    <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }}, '{{ item.title }}')">🗑️</span>
                 </span>
                 <span class="arrow">▼</span>
             </div>
@@ -92,10 +92,23 @@
     {% endfor %}
 </div>
 
+<!-- The background overlay element -->
+<div id="background-overlay"></div>
+
+<!-- Custom Alert -->
+<div id="cool-alert" class="custom-alert">
+    <div class="alert-content">
+        <p></p>
+        <button id="accept-btn" class="alert-btn green-btn">Si, elimina</button>
+        <button id="dismiss-btn" class="alert-btn red-btn">No, annulla</button>
+    </div>
+</div>
+
 <div class="filler"></div>
 
 <script src="{{ url_for('static', filename='animations.js') }}"></script>
 <script src="{{ url_for('static', filename='general.js') }}"></script>
+<script src="{{ url_for('static', filename='view_day.js') }}"></script>
 
 </body>
 </html>
