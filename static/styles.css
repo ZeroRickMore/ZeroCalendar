@@ -237,11 +237,53 @@ select:hover, .button:hover {
 
 .day-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1rem;
     font-weight: bold;
+    position: relative;
+    padding: 4px 8px;
 }
+
+.header-separator {
+    width: 100%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.4);
+    margin: 6px 0;
+}
+
+.header-top {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.event-time {
+    font-weight: bold;
+    color: white;
+}
+
+.edit-icon,
+.delete-icon {
+    cursor: pointer;
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+.event-title {
+    margin-top: 2px;
+    margin-left: 0;
+    font-size: 1rem;
+    word-break: break-word;
+}
+
+.day-header .arrow {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+}
+
 
 .day-details {
     border: 1px solid black;
@@ -454,7 +496,7 @@ input {
     margin-top: 20px;
 }
 
-.add-event-button {
+.add-event-button-month {
     font-size: 40px;
     font-weight: bold;
     background-color: #4CAF50;
@@ -463,6 +505,22 @@ input {
     border-radius: 50%;
     width: 60px;
     height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.add-event-button {
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;

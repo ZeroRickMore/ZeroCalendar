@@ -14,7 +14,7 @@
     <button class="forward-button" onclick="goForward()">⏩</button>
 </div>
 
-<h1>Eventi {{ day }}/{{ month }}/{{ year }}</h1>
+<h2>Eventi {{ day }}/{{ month }}/{{ year }}</h2>
 
 <div class="add-event-button-container">
     <a href="/add_event/{{ year }}-{{ month }}-{{ day }}" class="add-event-button">+</a>
@@ -24,11 +24,13 @@
     {% for item in day_objects %}
         <div class="day-entry color-{{ loop.index0 % 3 }}">
             <div class="day-header" onclick="toggleDetails(this)">
-                <span>
-                    {{ item.when.strftime('%H:%M') }} - {{ item.title }}
+                <div class="header-top">
+                    <span class="event-time">{{ item.when.strftime('%H:%M') }}</span>
                     <span class="edit-icon" onclick="event.stopPropagation(); toggleEditForm(this)">✏️</span>
                     <span class="delete-icon" onclick="event.stopPropagation(); confirmDelete({{ item.id }}, '{{ item.title }}')">🗑️</span>
-                </span>
+                </div>
+                <div class="header-separator"></div>
+                <div class="event-title">{{ item.title }}</div>
                 <span class="arrow">▼</span>
             </div>
             <div class="day-info-container">
