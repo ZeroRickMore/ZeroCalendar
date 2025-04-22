@@ -4,3 +4,4 @@ __pycache__/ZeroCalendar.cpython-312.pyc
 usernames.json
 test.py
 testing.py
+*.log
