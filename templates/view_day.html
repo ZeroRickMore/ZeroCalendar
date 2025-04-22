@@ -42,8 +42,10 @@
             </div>
             <div class="day-info-container">
                 <div class="day-details">
+                    <!-- SHOW USERNAME
                     <p>Caricato da: <strong>{{ item.username }}</strong></p>
                     <hr>
+                     -->
                     <p><strong>Descrizione:</strong></p>
                     <p style="white-space: pre-wrap;">{{ item.description }}</p>
 
@@ -52,7 +54,7 @@
                         <p><strong>Versione precedente:</strong></p>
                         <p style="white-space: pre-wrap;">{{ item.old_version }}</p>
                     {% endif %}
-
+                        
                     {% if item.last_modified_desc != '' %}
                         <hr>
                         <p><strong>Modifiche:</strong></p>
