@@ -5,7 +5,7 @@ from validators import DayEvent_validator
 from support import get_user, get_current_timestamp_string
 from datetime import datetime, date
 import calendar
-from markupsafe import escape
+from loggers import database_logger
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
@@ -13,12 +13,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app) # Connect to db
 
+
 # ====================================
 #               ROUTES
 # ====================================
     
 @app.route('/ping')
 def ping():
+    database_logger.info("Who the hell pinged?!")
     return 'pong'
 
 
@@ -53,6 +55,8 @@ def add_event():
     
     db.session.add(new_day_event)
     db.session.commit()
+
+    database_logger.info(f"ADDED EVENT -> {new_day_event.log()}")
 
     # return {'status': 'success', 'id': new_day_event.id}, 201
     return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
@@ -105,6 +109,9 @@ def modify_event(event_id):
     if to_be_modified_event is None:
         raise Exception("Event to modify not found...")
 
+    # Save for logger
+    previous_stuff = to_be_modified_event.copy()
+
     username = get_user(request=request)
 
      # Save old version =============================
@@ -127,9 +134,7 @@ def modify_event(event_id):
 
     db.session.commit()
 
-    to_be_modified_event = db.session.get(DayEvent, event_id) # TODO DEBUG
-
-    # return {'status': 'success', 'new': to_be_modified_event.__repr__()}, 201
+    database_logger.info(f"BEFORE -> {previous_stuff.log()} || AFTER -> {to_be_modified_event.log()}")
 
     return redirect(url_for('view_day', day=to_be_modified_event.day.day, month=to_be_modified_event.day.month, year=to_be_modified_event.day.year))
 
@@ -154,6 +159,8 @@ def delete_event(event_id):
     db.session.commit()
 
     to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
+
+    database_logger.info(f"DELETED EVENT -> {to_be_deleted_event.log()}")
 
     # return {'status': 'success', 'deleted_item ': to_be_deleted_event.__repr__()}, 201
 
@@ -190,8 +197,7 @@ def view_day(day, month, year):
         raise TypeError(f"day must be str, not {type(month)}")
     if not isinstance(year, int):
         raise TypeError(f"day must be str, not {type(year)}")
-    
-    print(day, month, year)
+
 
     target_day = date(year, month, day)
 
@@ -239,8 +245,6 @@ def view_month(year, month):
         else:
             target_day = date(year, month, day_number)
             day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).count()
-    
-    print(day_numbers_dict)
 
     return render_template('view_month.html', 
                            year=year,
