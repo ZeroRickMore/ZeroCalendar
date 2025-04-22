@@ -13,7 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app) # Connect to db
 
-
 # ====================================
 #               ROUTES
 # ====================================
@@ -22,7 +21,6 @@ db.init_app(app) # Connect to db
 def ping():
     database_logger.info("Who the hell pinged?!")
     return 'pong'
-
 
 # ====================================
 #           EVENT MODIFIERS
