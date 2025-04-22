@@ -27,3 +27,6 @@ werkzeug_logger.addHandler(file_handler)
 database_logger = logging.getLogger('db')
 database_logger.setLevel(logging.INFO)
 database_logger.addHandler(file_handler)
+
+# This is not the correct logger for this message, but I will not create a different one just for this...
+database_logger.info("=================< SERVER JUST STARTED >=================") 
