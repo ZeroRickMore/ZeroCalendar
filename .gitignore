@@ -1,7 +1,65 @@
-sqlite.db
-__pycache__/ZeroCalendar.cpython-312.pyc
-*.pyc
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.cache
+.pytest_cache/
+
+# Flask cache files
+instance/
+*.db
+*.sqlite3
+
+# Flask specific
+*.log
+*.pot
+*.mo
+
+# Environment variables
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Docker
+*.pid
+
+# Local config
 usernames.json
 test.py
 testing.py
-*.log
