@@ -8,6 +8,11 @@ import calendar
 from loggers import database_logger
 import os, json
 
+# Telegram bot imports
+import ZeroCalendarBot.ZeroCalendarBot as ZeroCalendar_bot
+import asyncio
+
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -43,6 +48,12 @@ database_logger.info("=================< SERVER JUST STARTED >================="
 def ping():
     database_logger.info("Who the hell pinged?!")
     return 'pong'
+
+@app.route('/bot/<text>')
+def make_bot_write(text):
+    send_telegram_message(text=text)
+    database_logger.info(f"Lil bro made telegram bot write this: {text}")
+    return text
 
 # ====================================
 #           EVENT MODIFIERS
@@ -276,6 +287,9 @@ def view_month(year, month):
 
 
 
+def send_telegram_message(text):
+    # Run the async message-sending part
+    asyncio.run(ZeroCalendar_bot.send_message_in_ZeroCalendar_group_chat(text=text))
 
 
 if __name__ == '__main__':
