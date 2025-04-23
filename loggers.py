@@ -28,3 +28,7 @@ if __name__ != '__main__':
     database_logger = logging.getLogger('db')
     database_logger.setLevel(logging.INFO)
     database_logger.addHandler(file_handler)
+
+    telegrambot_logger = logging.getLogger('telegrambot')
+    telegrambot_logger.setLevel(logging.INFO)
+    telegrambot_logger.addHandler(file_handler)
