@@ -6,12 +6,34 @@ from support import get_user, get_current_timestamp_string
 from datetime import datetime, date
 import calendar
 from loggers import database_logger
+import os, json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app) # Connect to db
+
+def check_usernames_json():
+    # Create usernames.json
+    if not os.path.exists('usernames.json'):
+        with open('usernames.json', 'w') as f:
+            json.dump({}, f)
+        # This is not the correct logger for this message, but I will not create a different one just for this...
+        database_logger.warning(f"Created empty usernames.json file")
+
+def check_db():
+    # Create db
+    if not os.path.exists(os.path.join('instance', 'sqlite.db')):
+        with app.app_context():
+            db.create_all()
+        database_logger.warning(f"Created empty DATABSE instance/sqlite.db")
+
+check_usernames_json()
+check_db()
+
+# This is not the correct logger for this message, but I will not create a different one just for this...
+database_logger.info("=================< SERVER JUST STARTED >=================")
 
 # ====================================
 #               ROUTES
