@@ -7,11 +7,13 @@ from datetime import datetime, date
 import calendar
 from loggers import database_logger
 import os, json
+import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
 
-# Telegram bot imports
-import ZeroCalendarBot.ZeroCalendarBot as ZeroCalendar_bot
-import asyncio
 
+
+# ====================================
+#            STARTUP STUFF
+# ====================================
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
@@ -34,11 +36,14 @@ def check_db():
             db.create_all()
         database_logger.warning(f"Created empty DATABSE instance/sqlite.db")
 
-check_usernames_json()
-check_db()
 
-# This is not the correct logger for this message, but I will not create a different one just for this...
-database_logger.info("=================< SERVER JUST STARTED >=================")
+
+# ====================================
+#     TELEGRAM BOT NOTIFICATIONS
+# ====================================
+
+
+
 
 # ====================================
 #               ROUTES
@@ -48,12 +53,6 @@ database_logger.info("=================< SERVER JUST STARTED >================="
 def ping():
     database_logger.info("Who the hell pinged?!")
     return 'pong'
-
-@app.route('/bot/<text>')
-def make_bot_write(text):
-    send_telegram_message(text=text)
-    database_logger.info(f"Lil bro made telegram bot write this: {text}")
-    return text
 
 # ====================================
 #           EVENT MODIFIERS
@@ -287,10 +286,14 @@ def view_month(year, month):
 
 
 
-def send_telegram_message(text):
-    # Run the async message-sending part
-    asyncio.run(ZeroCalendar_bot.send_message_in_ZeroCalendar_group_chat(text=text))
+
 
 
 if __name__ == '__main__':
+    check_usernames_json()
+    check_db()
+
+    # This is not the correct logger for this message, but I will not create a different one just for this...
+    database_logger.info("=================< SERVER JUST STARTED >=================")
+
     app.run(port=8030, debug=True)
