@@ -2,7 +2,7 @@ import ZeroCalendarBot.ZeroCalendarBot as ZeroCalendar_bot
 import asyncio
 from apscheduler.schedulers.background import BackgroundScheduler
 from loggers import telegrambot_logger
-from models import DayEvent
+from models import db, DayEvent
 from datetime import datetime, timedelta
 import time
 
@@ -46,11 +46,35 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
 #             GET EVENTS
 # ====================================
 
-def get_events_in_next_hour():
-    pass
+def get_events_in_next_hour() -> list[DayEvent]:
+    now = datetime.now()
+    today = now.date()
+    current_hour = now.time()
+    one_hour_later = (now + timedelta(hours=1)).time()
+
+    events : list[DayEvent] = db.session.query(DayEvent).filter(
+        DayEvent.deleted == False, 
+        DayEvent.day == today,
+        DayEvent.when >= current_hour,
+        DayEvent.when <= one_hour_later
+    ).order_by('when').all()
+
+    return events
+
 
 def get_next_events() -> list[DayEvent]:
-    pass
+    '''
+    For future implementation.
+    Currently, just do hour events!
+    '''
+    return get_events_in_next_hour()
+
+    '''
+    if (current_hour is around 10:00 AM or similar):
+        send notification with all day events for recap
+    then
+        send usual notification of get_events_in_next_hour()
+    '''
 
 def check_next_events() -> None:
     events = get_next_events()
@@ -78,6 +102,7 @@ def create_and_start_tgbot_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(check_next_events, 'interval', minutes=15)
 
+    # Align with quarter
     wait_until_next_quarter()
 
     scheduler.start()
