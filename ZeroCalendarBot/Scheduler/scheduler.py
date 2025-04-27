@@ -1,6 +1,6 @@
 import ZeroCalendarBot.ZeroCalendarBot as ZeroCalendar_bot
 import asyncio
-from loggers import telegrambot_logger
+from loggers import scheduler_logger
 from models import db, DayEvent
 from datetime import datetime, timedelta
 import time
@@ -101,8 +101,8 @@ def wait_until_next_quarter():
 
     next_quarter = now.replace(second=0, microsecond=0) + timedelta(minutes=minutes_to_wait)
     delay = (next_quarter - now).total_seconds()
-    s = f"SCHEDULER -> Waiting {delay/60:.2f} minutes to align with {next_quarter.strftime('%H:%M')}"
-    telegrambot_logger.info(s)
+    s = f"Waiting {delay/60:.2f} minutes to align with {next_quarter.strftime('%H:%M')}"
+    scheduler_logger.info(s)
     print(s)
     time.sleep(delay)
 
@@ -115,14 +115,14 @@ def sleep_through_the_night():
         # If after 21:00, sleep until 10:00 AM *tomorrow*
         wake_time += timedelta(days=1)
         sleep_duration = (wake_time - now).total_seconds()
-        s = f"SCHEDULER -> Sleeping for {sleep_duration/3600:.2f} hours until {wake_time.strftime('%H:%M')}. GOODNIGHT!"
-        telegrambot_logger.info(s)
+        s = f"Sleeping for {sleep_duration/3600:.2f} hours until {wake_time.strftime('%H:%M')}. GOODNIGHT!"
+        scheduler_logger.info(s)
         print(s)
         time.sleep(sleep_duration)
     else:
-        s = "SCHEDULER -> It's not night yet — no need to sleep."
+        s = "It's not night yet — no need to sleep."
         print(s)
-        telegrambot_logger.info(s)
+        scheduler_logger.info(s)
 
 
 
@@ -135,8 +135,8 @@ def run():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    s = f"=================< Telegram Bot Scheduler JUST STARTED >================="
-    telegrambot_logger.info(s)
+    s = f"=================< SCHEDULER STARTED >================="
+    scheduler_logger.info(s)
     print(s)
 
     # If it's night time, don't wake everybody up yet
@@ -151,5 +151,5 @@ def run():
         if DEBUG: 
             s = "=================< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >================="
             print(s)
-            telegrambot_logger.warning(s)
+            scheduler_logger.warning(s)
             break
