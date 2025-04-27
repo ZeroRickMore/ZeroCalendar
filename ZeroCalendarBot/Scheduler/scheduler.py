@@ -149,7 +149,7 @@ def run():
         check_next_events(asyncio_loop=loop)       # Send the message
 
         if DEBUG: 
-            s = "=================< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >================="
+            s = "xxxxxxxxxxxxxxxxx< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >xxxxxxxxxxxxxxxxx"
             print(s)
             scheduler_logger.warning(s)
             break
