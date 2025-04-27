@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import time
 from ZeroCalendar import app
 
-DEBUG = True
+DEBUG = False
 
 # ====================================
 #            SEND MESSAGE
@@ -32,7 +32,7 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
     
     # Logic
     if len(events)==1:
-        s = "*Ciao!* 💜💫\nQuesto è l'evento della prossima ora.\n---"
+        s = "*Ciao!* 💜💫\nQuesto è l'evento della prossima ora.\n\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️\n\n──────────────────────────\n"
     else:
         s = "*Ciao!* 💜💫\nQuesti sono gli eventi della prossima ora.\n\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️\n\n──────────────────────────\n"
 
@@ -115,12 +115,16 @@ def sleep_through_the_night():
         # If after 21:00, sleep until 10:00 AM *tomorrow*
         wake_time += timedelta(days=1)
         sleep_duration = (wake_time - now).total_seconds()
-        s = f"Scheduler Sleeping for {sleep_duration/3600:.2f} hours until {wake_time.strftime('%H:%M')}. GOODNIGHT!"
+        s = f"SCHEDULER -> Sleeping for {sleep_duration/3600:.2f} hours until {wake_time.strftime('%H:%M')}. GOODNIGHT!"
         telegrambot_logger.info(s)
         print(s)
         time.sleep(sleep_duration)
-    else: # TODO DEBUG
-        print("It's not night yet — no need to sleep.") # TODO DEBUG
+    else:
+        s = "SCHEDULER -> It's not night yet — no need to sleep."
+        print(s)
+        telegrambot_logger.info(s)
+
+
 
 
 # ====================================
@@ -145,7 +149,7 @@ def run():
         check_next_events(asyncio_loop=loop)       # Send the message
 
         if DEBUG: 
-            s = "SCHEDULER -> SCHEDULER STOPPED DUE TO DEBUG OPTION ON"
+            s = "=================< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >================="
             print(s)
             telegrambot_logger.warning(s)
             break
