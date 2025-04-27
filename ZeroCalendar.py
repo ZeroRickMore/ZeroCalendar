@@ -5,7 +5,7 @@ from validators import DayEvent_validator
 from support import get_user, get_current_timestamp_string
 from datetime import datetime, date
 import calendar
-from loggers import database_logger, werkzeug_logger
+from loggers import database_logger, myflask_logger
 import os, json
 import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
 import threading
@@ -31,14 +31,14 @@ def check_usernames_json():
     if not os.path.exists('usernames.json'):
         with open('usernames.json', 'w') as f:
             json.dump({}, f)
-        werkzeug_logger.warning(f"Created empty usernames.json file")
+        myflask_logger.warning(f"Created empty usernames.json file")
 
 def check_db():
     # Create db
     if not os.path.exists(os.path.join('instance', 'sqlite.db')):
         with app.app_context():
             db.create_all()
-        werkzeug_logger.warning(f"Created empty DATABASE instance/sqlite.db")
+        myflask_logger.warning(f"Created empty DATABASE instance/sqlite.db")
 
 
 
@@ -56,7 +56,7 @@ def check_db():
 if DEBUG:
     @app.route('/ping')
     def ping():
-        werkzeug_logger.info("Who dares pinging me?!")
+        myflask_logger.info("Who dares pinging me?!")
         return 'pong'
 
 # ====================================
@@ -295,14 +295,14 @@ def view_month(year, month):
 # ====================================
 
 def handle_exit_sigint(signum, frame):
-    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (ctrl+c) >xxxxxxxxxxxxxxxxx"
-    werkzeug_logger.warning(s)
+    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (ctrl+c) >xxxxxxxxxxxxxxxxx\n"
+    myflask_logger.warning(s)
     print(s)
     sys.exit(0)
 
 def handle_exit_sigterm(signum, frame):
-    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (systemctl or kill) >xxxxxxxxxxxxxxxxx"
-    werkzeug_logger.warning(s)
+    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (systemctl or kill) >xxxxxxxxxxxxxxxxx\n"
+    myflask_logger.warning(s)
     print(s)
     sys.exit(0)
 
@@ -324,10 +324,10 @@ if __name__ == '__main__':
 
     # Start server
     if DEBUG:
-        werkzeug_logger.info("=================< SERVER STARTED IN DEBUG MODE >=================")
+        myflask_logger.info("\n=================< SERVER STARTED IN DEBUG MODE >=================")
 
         app.run(port=8030, debug=True)
     else:
-        werkzeug_logger.info("=================< SERVER STARTED >=================")
+        myflask_logger.info("\n=================< SERVER STARTED >=================")
 
         app.run(host='0.0.0.0', port=8030, debug=False)

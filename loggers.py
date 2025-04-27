@@ -20,8 +20,9 @@ class MultiFormatter(logging.Formatter):
         elif record.name == 'scheduler':
             self._style._fmt = '%(asctime)s [SCHEDULER] [%(levelname)s] ===> %(message)s'
         elif record.name == 'werkzeug':
+            self._style._fmt = '%(asctime)s [WERKZEUG] [%(levelname)s] - %(remote_addr)s - %(method)s %(path)s ===> %(message)s'
+        elif record.name == 'myflask':
             self._style._fmt = '%(asctime)s [FLASK] [%(levelname)s] - %(remote_addr)s - %(method)s %(path)s ===> %(message)s'
-
         return super().format(record)
 
 
@@ -35,6 +36,10 @@ if __name__ != '__main__':
     werkzeug_logger = logging.getLogger('werkzeug')
     werkzeug_logger.setLevel(logging.WARNING)
     werkzeug_logger.addHandler(file_handler)
+
+    myflask_logger = logging.getLogger('myflask')
+    myflask_logger.setLevel(logging.INFO)
+    myflask_logger.addHandler(file_handler)
 
     database_logger = logging.getLogger('db')
     database_logger.setLevel(logging.INFO)
