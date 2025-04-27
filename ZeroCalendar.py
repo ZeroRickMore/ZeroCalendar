@@ -5,7 +5,7 @@ from validators import DayEvent_validator
 from support import get_user, get_current_timestamp_string
 from datetime import datetime, date
 import calendar
-from loggers import database_logger
+from loggers import database_logger, werkzeug_logger
 import os, json
 import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
 import threading
@@ -31,15 +31,14 @@ def check_usernames_json():
     if not os.path.exists('usernames.json'):
         with open('usernames.json', 'w') as f:
             json.dump({}, f)
-        # This is not the correct logger for this message, but I will not create a different one just for this...
-        database_logger.warning(f"Created empty usernames.json file")
+        werkzeug_logger.warning(f"Created empty usernames.json file")
 
 def check_db():
     # Create db
     if not os.path.exists(os.path.join('instance', 'sqlite.db')):
         with app.app_context():
             db.create_all()
-        database_logger.warning(f"Created empty DATABSE instance/sqlite.db")
+        werkzeug_logger.warning(f"Created empty DATABASE instance/sqlite.db")
 
 
 
@@ -57,7 +56,7 @@ def check_db():
 if DEBUG:
     @app.route('/ping')
     def ping():
-        database_logger.info("Who dares pinging me?!")
+        werkzeug_logger.info("Who dares pinging me?!")
         return 'pong'
 
 # ====================================
@@ -297,13 +296,13 @@ def view_month(year, month):
 
 def handle_exit_sigint(signum, frame):
     s = "=================< SERVER SHUTTING DOWN (ctrl+c) >================="
-    database_logger.warning(s)
+    werkzeug_logger.warning(s)
     print(s)
     sys.exit(0)
 
 def handle_exit_sigterm(signum, frame):
     s = "=================< SERVER SHUTTING DOWN (systemctl or kill) >================="
-    database_logger.warning(s)
+    werkzeug_logger.warning(s)
     print(s)
     sys.exit(0)
 
@@ -320,10 +319,10 @@ if __name__ == '__main__':
 
     # # This is not the correct logger for this message, but I will not create a different one just for this...
     if DEBUG:
-        database_logger.info("=================< SERVER JUST STARTED IN DEBUG MODE >=================")
+        werkzeug_logger.info("=================< SERVER JUST STARTED IN DEBUG MODE >=================")
 
         app.run(port=8030, debug=True)
     else:
-        database_logger.info("=================< SERVER JUST STARTED >=================")
+        werkzeug_logger.info("=================< SERVER JUST STARTED >=================")
 
         app.run(host='0.0.0.0', port=8030, debug=False)
