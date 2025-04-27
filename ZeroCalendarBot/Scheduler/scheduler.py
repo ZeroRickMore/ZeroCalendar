@@ -1,6 +1,5 @@
 import ZeroCalendarBot.ZeroCalendarBot as ZeroCalendar_bot
 import asyncio
-from apscheduler.schedulers.background import BackgroundScheduler
 from loggers import telegrambot_logger
 from models import db, DayEvent
 from datetime import datetime, timedelta
