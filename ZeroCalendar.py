@@ -6,25 +6,40 @@ from support import get_user, get_current_timestamp_string
 from datetime import datetime, date
 import calendar
 from loggers import database_logger, myflask_logger
-import os, json
-import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
-import threading
-
-# Log process death
-import signal
-import sys
+import os
+import json
+from sys import exit
 
 DEBUG = False
+flask_app = None
 
 # ====================================
 #            STARTUP STUFF
 # ====================================
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def main():
+    # Initialize flask flask_app and db
+    global flask_app
+    flask_app = Flask(__name__)
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db.init_app(app) # Connect to db
+    db.init_app(flask_app) # Connect to db
+
+    # Create missing files if necessary
+    check_usernames_json()
+    check_db()
+
+    # Start server
+    create_flask_routes_after_main()
+    if DEBUG:
+        myflask_logger.info("-----------------< FLASK STARTED IN DEBUG MODE >-----------------")
+
+        flask_app.run(port=8030, debug=True)
+    else:
+        myflask_logger.info("-----------------< FLASK STARTED >-----------------")
+
+        flask_app.run(host='0.0.0.0', port=8030, debug=False)
 
 def check_usernames_json():
     # Create usernames.json
@@ -36,298 +51,291 @@ def check_usernames_json():
 def check_db():
     # Create db
     if not os.path.exists(os.path.join('instance', 'sqlite.db')):
-        with app.app_context():
+        with flask_app.app_context():
             db.create_all()
         myflask_logger.warning(f"Created empty DATABASE instance/sqlite.db")
 
 
 
-# ====================================
-#     TELEGRAM BOT NOTIFICATIONS
-# ====================================
 
-
-
-
-# ====================================
-#               ROUTES
-# ====================================
-
-if DEBUG:
-    @app.route('/ping')
-    def ping():
-        myflask_logger.info("Who dares pinging me?!")
-        return 'pong'
-
-# ====================================
-#           EVENT MODIFIERS
-# ====================================
-
-@app.route('/add_event', methods=['GET', 'POST'])
-def add_event():
+def create_flask_routes_after_main():
     '''
-    Add an event, via a POST request
-    containing:
-
-        username,
-        title,
-        day,
-        when,
-        description,
-        old_version,
-        last_modified_desc,
-    
-    The username is inferred from the usernames.json
+    This function helps creating the routes only after main() function is called.
+    This doesn't look too clean, but it does the job at the cost of just an extra indentation...
     '''
 
-    if request.method == 'GET':
-        return render_template('add_event.html', today=datetime.today())
-    
+    # ====================================
+    #               ROUTES
+    # ====================================
 
-    input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
+    if DEBUG:
+        @flask_app.route('/ping')
+        def ping():
+            myflask_logger.info("Who dares pinging me?!")
+            return 'pong'
 
-    new_day_event : DayEvent = parse_and_get_DayEvent_object_from_dict(d = input_data)
-    
-    db.session.add(new_day_event)
-    db.session.commit()
+    # ====================================
+    #           EVENT MODIFIERS
+    # ====================================
 
-    database_logger.info(f"ADDED EVENT -> {repr(new_day_event.log())}")
+    @flask_app.route('/add_event', methods=['GET', 'POST'])
+    def add_event():
+        '''
+        Add an event, via a POST request
+        containing:
 
-    # return {'status': 'success', 'id': new_day_event.id}, 201
-    return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
+            username,
+            title,
+            day,
+            when,
+            description,
+            old_version,
+            last_modified_desc,
+        
+        The username is inferred from the usernames.json
+        '''
+
+        if request.method == 'GET':
+            return render_template('add_event.html', today=datetime.today())
+        
+
+        input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
+
+        new_day_event : DayEvent = parse_and_get_DayEvent_object_from_dict(d = input_data)
+        
+        db.session.add(new_day_event)
+        db.session.commit()
+
+        database_logger.info(f"ADDED EVENT -> {repr(new_day_event.log())}")
+
+        # return {'status': 'success', 'id': new_day_event.id}, 201
+        return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
 
 
-@app.route('/add_event/<int:year>-<int:month>-<int:day>', methods=['GET'])
-def add_event_of_day(year, month, day):
-    '''
-    Add an event, via a POST request
-    containing:
+    @flask_app.route('/add_event/<int:year>-<int:month>-<int:day>', methods=['GET'])
+    def add_event_of_day(year, month, day):
+        '''
+        Add an event, via a POST request
+        containing:
 
-        username,
-        title,
-        day,
-        when,
-        description,
-        old_version,
-        last_modified_desc,
-    
-    The username is inferred from the usernames.json
-    '''
-    if not isinstance(year, int) or not isinstance(month, int) or not isinstance(day, int):
-        raise TypeError(f"All must be int: {type(year)}, {type(month)}, {type(day)}")
+            username,
+            title,
+            day,
+            when,
+            description,
+            old_version,
+            last_modified_desc,
+        
+        The username is inferred from the usernames.json
+        '''
+        if not isinstance(year, int) or not isinstance(month, int) or not isinstance(day, int):
+            raise TypeError(f"All must be int: {type(year)}, {type(month)}, {type(day)}")
 
-    return render_template('add_event.html', today=datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d").date())
+        return render_template('add_event.html', today=datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d").date())
 
-@app.route('/modify_event/<int:event_id>', methods=['POST'])
-def modify_event(event_id):
-    '''
-    Modify an event, via a POST request on URL with its ID,
-    containing:
+    @flask_app.route('/modify_event/<int:event_id>', methods=['POST'])
+    def modify_event(event_id):
+        '''
+        Modify an event, via a POST request on URL with its ID,
+        containing:
 
-        username,
-        title,
-        day,
-        when,
-        description,
-        old_version,
-        last_modified_desc,
-    
-    The username is inferred from the usernames.json
-    '''
-    if not isinstance(event_id, int):
-        raise TypeError(f"event_id must be int: {type(event_id)}")
-    
-    input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
-    
-    to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
+            username,
+            title,
+            day,
+            when,
+            description,
+            old_version,
+            last_modified_desc,
+        
+        The username is inferred from the usernames.json
+        '''
+        if not isinstance(event_id, int):
+            raise TypeError(f"event_id must be int: {type(event_id)}")
+        
+        input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
+        
+        to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
-    if to_be_modified_event is None:
-        raise Exception("Event to modify not found...")
+        if to_be_modified_event is None:
+            raise Exception("Event to modify not found...")
 
-    # Save for logger
-    previous_stuff = to_be_modified_event.copy()
+        # Save for logger
+        previous_stuff = to_be_modified_event.copy()
 
-    username = get_user(request=request)
+        username = get_user(request=request)
 
-     # Save old version =============================
-    to_be_modified_event.old_version = f'''- Titolo: << {to_be_modified_event.title} >>
+        # Save old version =============================
+        to_be_modified_event.old_version = f'''- Titolo: << {to_be_modified_event.title} >>
 - Giorno: {to_be_modified_event.day}
 - Ora: {to_be_modified_event.when}
 - Descrizione:
-<<{to_be_modified_event.description}>>'''
+    <<{to_be_modified_event.description}>>'''
 
-    to_be_modified_event.last_modified_desc += f"- Modificato da {username} - {get_current_timestamp_string()}\n"
-    # ================================================
+        to_be_modified_event.last_modified_desc += f"- Modificato da {username} - {get_current_timestamp_string()}\n"
+        # ================================================
 
-    to_be_modified_event.username = username
-    to_be_modified_event.description = input_data['description'].capitalize()
-    to_be_modified_event.title = input_data['title'].capitalize()
-    to_be_modified_event.day = input_data['day']
-    to_be_modified_event.when = input_data['when']
+        to_be_modified_event.username = username
+        to_be_modified_event.description = input_data['description'].capitalize()
+        to_be_modified_event.title = input_data['title'].capitalize()
+        to_be_modified_event.day = input_data['day']
+        to_be_modified_event.when = input_data['when']
 
-    DayEvent_validator(day_event = to_be_modified_event) # Make sure the modifications make sense
+        DayEvent_validator(day_event = to_be_modified_event) # Make sure the modifications make sense
 
-    db.session.commit()
+        db.session.commit()
 
-    database_logger.info(f"BEFORE -> {repr(previous_stuff.log())} || AFTER -> {repr(to_be_modified_event.log())}")
+        database_logger.info(f"BEFORE -> {repr(previous_stuff.log())} || AFTER -> {repr(to_be_modified_event.log())}")
 
-    return redirect(url_for('view_day', day=to_be_modified_event.day.day, month=to_be_modified_event.day.month, year=to_be_modified_event.day.year))
-
-
-@app.route('/delete_event/<int:event_id>', methods=['GET'])
-def delete_event(event_id):
-    '''
-    Delete an event by its id.
-    This is a simple GET request, no checks whatsoever.
-
-    The element is not really deleted... It just doesn't appear anymore normally.
-    Consider it to go to a trash bin.
-    '''
-
-    if not isinstance(event_id, int):
-        raise TypeError(f"event_id must be int: {type(event_id)}")
-    
-    to_be_deleted_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
-
-    to_be_deleted_event.deleted = True
-
-    db.session.commit()
-
-    to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
-
-    database_logger.info(f"DELETED EVENT -> {repr(to_be_deleted_event.log())}")
-
-    # return {'status': 'success', 'deleted_item ': to_be_deleted_event.__repr__()}, 201
-
-    return redirect(url_for('view_day', day=to_be_deleted_event.day.day, month=to_be_deleted_event.day.month, year=to_be_deleted_event.day.year))
+        return redirect(url_for('view_day', day=to_be_modified_event.day.day, month=to_be_modified_event.day.month, year=to_be_modified_event.day.year))
 
 
+    @flask_app.route('/delete_event/<int:event_id>', methods=['GET'])
+    def delete_event(event_id):
+        '''
+        Delete an event by its id.
+        This is a simple GET request, no checks whatsoever.
 
-# ====================================
-#              VISUALIZE
-# ====================================
+        The element is not really deleted... It just doesn't flask_appear anymore normally.
+        Consider it to go to a trash bin.
+        '''
+
+        if not isinstance(event_id, int):
+            raise TypeError(f"event_id must be int: {type(event_id)}")
+        
+        to_be_deleted_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
+
+        to_be_deleted_event.deleted = True
+
+        db.session.commit()
+
+        to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
+
+        database_logger.info(f"DELETED EVENT -> {repr(to_be_deleted_event.log())}")
+
+        # return {'status': 'success', 'deleted_item ': to_be_deleted_event.__repr__()}, 201
+
+        return redirect(url_for('view_day', day=to_be_deleted_event.day.day, month=to_be_deleted_event.day.month, year=to_be_deleted_event.day.year))
 
 
 
-@app.route('/view_event/<int:event_id>', methods=['GET'])
-def view_event(event_id):
-    '''
-    View an event by id
-    '''
-    if not isinstance(event_id, int):
-        raise TypeError(f"event_id must be int: {type(event_id)}")  
-
-    to_be_viewed_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
-
-    return to_be_viewed_event.__repr__()
-
-@app.route('/view_day/<int:day>-<int:month>-<int:year>', methods=['GET'])
-def view_day(day, month, year):
-    '''
-    View all events in a day.
-    '''
-    if not isinstance(day, int):
-        raise TypeError(f"day must be str, not {type(day)}")
-    if not isinstance(month, int):
-        raise TypeError(f"day must be str, not {type(month)}")
-    if not isinstance(year, int):
-        raise TypeError(f"day must be str, not {type(year)}")
-
-
-    target_day = date(year, month, day)
-
-    day_objects = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).order_by('when').all()
-
-    # return escape(str(day_objects) + f'\n\nA TOTAL OF {len(day_objects)}')
-    return render_template('view_day.html', 
-                           day=day, 
-                           month=month, 
-                           year=year, 
-                           day_objects=day_objects
-    )
-
-
-@app.route('/')
-def index():
-    today = datetime.today()
-    current_year = today.year
-    current_month = today.month
-
-    return redirect(url_for('view_month', year=current_year, month=current_month))
+    # ====================================
+    #              VISUALIZE
+    # ====================================
 
 
 
-@app.route('/view_month/<int:year>-<int:month>')
-def view_month(year, month):
+    @flask_app.route('/view_event/<int:event_id>', methods=['GET'])
+    def view_event(event_id):
+        '''
+        View an event by id
+        '''
+        if not isinstance(event_id, int):
+            raise TypeError(f"event_id must be int: {type(event_id)}")  
 
-    _, day_number = calendar.monthrange(year, month)
-    first_weekday_index = calendar.weekday(year, month, 1)
-    
-    today = datetime.today()
-    current_year = today.year
-    current_month = today.month
-    should_check_past = (current_year == year) and (current_month == month)
+        to_be_viewed_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
-    day_numbers = [50+_ for _ in range(first_weekday_index)] + [i for i in range(1, day_number+1)] # Skip to fit monday in column
+        return to_be_viewed_event.__repr__()
 
-    day_numbers_dict = {}
+    @flask_app.route('/view_day/<int:day>-<int:month>-<int:year>', methods=['GET'])
+    def view_day(day, month, year):
+        '''
+        View all events in a day.
+        '''
+        if not isinstance(day, int):
+            raise TypeError(f"day must be str, not {type(day)}")
+        if not isinstance(month, int):
+            raise TypeError(f"day must be str, not {type(month)}")
+        if not isinstance(year, int):
+            raise TypeError(f"day must be str, not {type(year)}")
 
-    for day_number in day_numbers:
-        if day_number >= 50 : # Days to skip
-            day_numbers_dict[day_number] = None
-        elif should_check_past and day_number < datetime.today().day: # Past day and I should check for it
-            day_numbers_dict[day_number] = 'A'
-        else:
-            target_day = date(year, month, day_number)
-            day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).count()
 
-    return render_template('view_month.html', 
-                           year=year,
-                           month=month,
-                           day_numbers=day_numbers_dict,
-                           months=['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
-                           years=range(2025, 2041)
-    )
+        target_day = date(year, month, day)
+
+        day_objects = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).order_by('when').all()
+
+        # return escape(str(day_objects) + f'\n\nA TOTAL OF {len(day_objects)}')
+        return render_template('view_day.html', 
+                            day=day, 
+                            month=month, 
+                            year=year, 
+                            day_objects=day_objects
+        )
+
+
+    @flask_app.route('/')
+    def index():
+        today = datetime.today()
+        current_year = today.year
+        current_month = today.month
+
+        return redirect(url_for('view_month', year=current_year, month=current_month))
+
+
+
+    @flask_app.route('/view_month/<int:year>-<int:month>')
+    def view_month(year, month):
+
+        _, day_number = calendar.monthrange(year, month)
+        first_weekday_index = calendar.weekday(year, month, 1)
+        
+        today = datetime.today()
+        current_year = today.year
+        current_month = today.month
+        should_check_past = (current_year == year) and (current_month == month)
+
+        day_numbers = [50+_ for _ in range(first_weekday_index)] + [i for i in range(1, day_number+1)] # Skip to fit monday in column
+
+        day_numbers_dict = {}
+
+        for day_number in day_numbers:
+            if day_number >= 50 : # Days to skip
+                day_numbers_dict[day_number] = None
+            elif should_check_past and day_number < datetime.today().day: # Past day and I should check for it
+                day_numbers_dict[day_number] = 'A'
+            else:
+                target_day = date(year, month, day_number)
+                day_numbers_dict[day_number] = db.session.query(DayEvent).filter(DayEvent.deleted == False, DayEvent.day == target_day).count()
+
+        return render_template('view_month.html', 
+                            year=year,
+                            month=month,
+                            day_numbers=day_numbers_dict,
+                            months=['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+                            years=range(2025, 2041)
+        )
+
+
 
 
 # ====================================
 #           LOG PROCESS DEATH
 # ====================================
 
-def handle_exit_sigint(signum, frame):
-    s = "-------!!!-------< SERVER SHUTTING DOWN (ctrl+c) >-------!!!-------"
+
+def handle_exit_sigint():
+    s = "-------!!!-------< FLASK SHUTTING DOWN (ctrl+c) >-------!!!-------"
     myflask_logger.warning(s)
     print(s)
-    sys.exit(0)
 
-def handle_exit_sigterm(signum, frame):
-    s = "-------!!!-------< SERVER SHUTTING DOWN (systemctl or kill) >-------!!!-------"
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
+
+def handle_exit_sigterm():
+    s = "-------!!!-------< FLASK SHUTTING DOWN (systemctl or kill) >-------!!!-------"
     myflask_logger.warning(s)
     print(s)
-    sys.exit(0)
 
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
+
+
+# TODO:
+'''
+Devo fare in modo che il join() non blocchi il captaggio di ctrl+c
+
+'''
 
 
 
 if __name__ == '__main__':
-    # Attach the signal handler for process kill logging
-    signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
-    signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
-
-    # Start scheduler and telegram bot
-    thread = threading.Thread(target=tgbot_scheduler.run, daemon=True)
-    thread.start()
-
-    # Create missing files if necessary
-    check_usernames_json()
-    check_db()
-
-    # Start server
-    if DEBUG:
-        myflask_logger.info("-----------------< SERVER STARTED IN DEBUG MODE >-----------------")
-
-        app.run(port=8030, debug=True)
-    else:
-        myflask_logger.info("-----------------< SERVER STARTED >-----------------")
-
-        app.run(host='0.0.0.0', port=8030, debug=False)
+    main()
