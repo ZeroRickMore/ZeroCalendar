@@ -57,7 +57,7 @@ def get_events_in_next_hour() -> list[DayEvent]:
     current_hour = now.time()
     one_hour_later = (now + timedelta(hours=1)).time()
 
-    with flask_app.flask_app_context():
+    with flask_app.app_context():
         events : list[DayEvent] = db.session.query(DayEvent).filter(
             DayEvent.deleted == False, 
             DayEvent.day == today,
