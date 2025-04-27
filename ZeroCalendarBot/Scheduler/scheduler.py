@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import time
 from ZeroCalendar import app
 
+DEBUG = True
+
 # ====================================
 #            SEND MESSAGE
 # ====================================
@@ -30,16 +32,19 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
     
     # Logic
     if len(events)==1:
-        s = 'Ciao! Ricordatevi di questo evento!\n'
+        s = "*Ciao!* 💜💫\nQuesto è l'evento della prossima ora.\n---"
     else:
-        s = 'Ciao! Ricordatevi di questi eventi!\n'
+        s = "*Ciao!* 💜💫\nQuesti sono gli eventi della prossima ora.\n\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️\n\n──────────────────────────\n"
 
     EVENT_BULLETPOINT = '📝'
 
     for event in events:
-        s += f'\n{EVENT_BULLETPOINT} *{event.title} ({event.when.hour}:{event.when.minute})*\n'
-        s += f'{event.description}\n'
+        minute = (f"0{event.when.minute}" if event.when.minute in range(0, 10) else str(event.when.minute)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
+        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}* \n\n'
+        s += f'"_{event.description}_"\n\n──────────────────────────\n'
     
+    s += '\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️'
+
     return s
 
 # ====================================
@@ -90,7 +95,7 @@ def check_next_events(asyncio_loop) -> None:
 def wait_until_next_quarter():
     now = datetime.now()
 
-    multiple_to_align_with = 15
+    multiple_to_align_with = 15 # Should be 15
 
     minutes_to_wait = multiple_to_align_with - (now.minute % multiple_to_align_with)
 
@@ -123,8 +128,6 @@ def sleep_through_the_night():
 # ====================================
 
 def run():
-    DEBUG = True
-
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -137,5 +140,12 @@ def run():
         sleep_through_the_night()
 
     while(True):
-        wait_until_next_quarter() # Align with quarter, so wait 15 minutes
+        if not DEBUG: wait_until_next_quarter() # Align with quarter, so wait 15 minutes
+        
         check_next_events(asyncio_loop=loop)       # Send the message
+
+        if DEBUG: 
+            s = "SCHEDULER -> SCHEDULER STOPPED DUE TO DEBUG OPTION ON"
+            print(s)
+            telegrambot_logger.warning(s)
+            break
