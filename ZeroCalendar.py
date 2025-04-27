@@ -8,7 +8,6 @@ import calendar
 from loggers import database_logger, myflask_logger
 import os
 import json
-from sys import exit
 
 DEBUG = False
 flask_app = None
@@ -33,11 +32,15 @@ def main():
     # Start server
     create_flask_routes_after_main()
     if DEBUG:
-        myflask_logger.info("-----------------< FLASK STARTED IN DEBUG MODE >-----------------")
-
+        s = "-----------------< FLASK STARTED IN DEBUG MODE >-----------------"
+        myflask_logger.info(s)
+        print(s)
+        
         flask_app.run(port=8030, debug=True)
     else:
-        myflask_logger.info("-----------------< FLASK STARTED >-----------------")
+        s = "-----------------< FLASK STARTED >-----------------"
+        myflask_logger.info(s)
+        print(s)
 
         flask_app.run(host='0.0.0.0', port=8030, debug=False)
 
@@ -318,7 +321,6 @@ def handle_exit_sigint():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-    exit(0)
 
 def handle_exit_sigterm():
     s = "-------!!!-------< FLASK SHUTTING DOWN (systemctl or kill) >-------!!!-------"
@@ -326,14 +328,6 @@ def handle_exit_sigterm():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-    exit(0)
-
-
-# TODO:
-'''
-Devo fare in modo che il join() non blocchi il captaggio di ctrl+c
-
-'''
 
 
 
