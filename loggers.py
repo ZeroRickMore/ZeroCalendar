@@ -17,7 +17,7 @@ if __name__ != '__main__':
         '%(asctime)s - %(levelname)s - %(remote_addr)s - %(method)s %(path)s - %(message)s'
     )
 
-    file_handler = logging.FileHandler('ZeroCalendar.log')
+    file_handler = logging.FileHandler('ZeroCalendar.log', encoding='utf-8')
     file_handler.setFormatter(formatter)
 
     # Flask has too many info logs, I don't want that many...
