@@ -16,6 +16,14 @@ from loggers import orchestrator_logger
 import signal
 from sys import exit
 
+# ====================================
+#               VARIABLES
+# ====================================
+
+# Joins the flask_app thread with a 0.5 timeout. A little noise is generated, but very small. This will enable ctrl+c to work. 
+# Turn to false if you will just use systemctl.
+NEED_KEYBOARD_INTERRUPT = True
+
 # Define the apps
 ALL_APPS : list = [telegram_bot_app, scheduler_app]
 # Define the threads
@@ -27,7 +35,6 @@ THREADS : list[Thread] = []
 # ====================================
 
 def handle_exit_sigint(signum, frame):
-    print("YO")
     exit_orchestrator_cascade(type='sigint')
     s = "-------!!!-------< ORCHESTRATOR SHUTTING DOWN (ctrl+c) >-------!!!-------"
     orchestrator_logger.warning(s)
@@ -35,7 +42,6 @@ def handle_exit_sigint(signum, frame):
     exit(0)
 
 def handle_exit_sigterm(signum, frame):
-    print("YE")
     exit_orchestrator_cascade(type='sigterm')
     s = "-------!!!-------< ORCHESTRATOR SHUTTING DOWN (systemctl or kill) >-------!!!-------"
     orchestrator_logger.warning(s)
@@ -116,13 +122,27 @@ def main():
         exit_orchestrator_solo()
     
     errors = None
+
+    # Main app start
+    flask_thread = threading.Thread(target=flask_app.main, daemon=True)
+    flask_thread.start()
+    THREADS.append(flask_thread)
+
     # Finally run the apps
     for current_app_script in ALL_APPS:
         thread = threading.Thread(target=current_app_script.main, daemon=True)
         thread.start()
         THREADS.append(thread)
 
-    flask_app.main()
+    # Join the flask_app thread fully or partially. Depends on the interactivity level required.
+    if NEED_KEYBOARD_INTERRUPT:
+        while flask_thread.is_alive():
+            flask_thread.join(timeout=0.5)  # Join with a timeout
+    else:
+        flask_thread.join()
+
+
+
 
 if __name__ == '__main__':
     main()
