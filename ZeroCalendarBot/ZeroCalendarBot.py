@@ -35,7 +35,7 @@ from loggers import telegrambot_logger
 #     print(f"User {update.message.chat.id} in {message_type}: {text}")
 
 async def send_message_in_ZeroCalendar_group_chat( text : str):
-    telegrambot_logger.info(f'TELEGRAM_BOT -> SENT MESSAGE -> "{repr(text)}"')
+    telegrambot_logger.info(f'SENT MESSAGE -> "{repr(text)}"')
     await app.bot.send_message(
         chat_id=GROUP_ID,
         text=text,
@@ -49,7 +49,7 @@ async def send_message_in_ZeroCalendar_group_chat( text : str):
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     s = f"Update {update} caused error {context.error}"
     print(s)
-    telegrambot_logger.error("TELEGRAM_BOT -> "+repr(s))
+    telegrambot_logger.error(repr(s))
 
 
 # =========================================================
@@ -58,8 +58,9 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 try:
-    print("Starting Bot")
-    telegrambot_logger.info("TELEGRAM_BOT -> Starting Bot")
+    s = "=================< TELEGRAM BOT STARTED >================="
+    print(s)
+    telegrambot_logger.info(s)
 
     # Telegram BOT Vars
     bot_support.load_env_vars()
@@ -83,4 +84,4 @@ try:
     # app.run_polling(poll_interval=5) # Check updates every 5 seconds
 
 except Exception as e:
-    telegrambot_logger.critical("TELEGRAM_BOT -> "+str(e))
+    telegrambot_logger.critical(repr(str(e)))
