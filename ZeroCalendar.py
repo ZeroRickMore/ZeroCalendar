@@ -319,10 +319,10 @@ if __name__ == '__main__':
 
     # # This is not the correct logger for this message, but I will not create a different one just for this...
     if DEBUG:
-        werkzeug_logger.info("=================< SERVER JUST STARTED IN DEBUG MODE >=================")
+        werkzeug_logger.info("=================< SERVER STARTED IN DEBUG MODE >=================")
 
         app.run(port=8030, debug=True)
     else:
-        werkzeug_logger.info("=================< SERVER JUST STARTED >=================")
+        werkzeug_logger.info("=================< SERVER STARTED >=================")
 
         app.run(host='0.0.0.0', port=8030, debug=False)
