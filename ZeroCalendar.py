@@ -8,7 +8,7 @@ import calendar
 from loggers import database_logger
 import os, json
 import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
-
+import threading
 
 
 # ====================================
@@ -290,10 +290,13 @@ def view_month(year, month):
 
 
 if __name__ == '__main__':
+    thread = threading.Thread(target=tgbot_scheduler.run, daemon=True)
+    thread.start()
+
     check_usernames_json()
     check_db()
 
-    # This is not the correct logger for this message, but I will not create a different one just for this...
+    # # This is not the correct logger for this message, but I will not create a different one just for this...
     database_logger.info("=================< SERVER JUST STARTED >=================")
 
     app.run(port=8030, debug=True)
