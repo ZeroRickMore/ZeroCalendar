@@ -86,7 +86,7 @@ def add_event():
     db.session.add(new_day_event)
     db.session.commit()
 
-    database_logger.info(f"ADDED EVENT -> {new_day_event.log()}")
+    database_logger.info(f"ADDED EVENT -> {repr(new_day_event.log())}")
 
     # return {'status': 'success', 'id': new_day_event.id}, 201
     return redirect(url_for('view_day', day=new_day_event.day.day, month=new_day_event.day.month, year=new_day_event.day.year))
@@ -164,7 +164,7 @@ def modify_event(event_id):
 
     db.session.commit()
 
-    database_logger.info(f"BEFORE -> {previous_stuff.log()} || AFTER -> {to_be_modified_event.log()}")
+    database_logger.info(f"BEFORE -> {repr(previous_stuff.log())} || AFTER -> {repr(to_be_modified_event.log())}")
 
     return redirect(url_for('view_day', day=to_be_modified_event.day.day, month=to_be_modified_event.day.month, year=to_be_modified_event.day.year))
 
@@ -190,7 +190,7 @@ def delete_event(event_id):
 
     to_be_deleted_event = db.session.get(DayEvent, event_id) # TODO DEBUG
 
-    database_logger.info(f"DELETED EVENT -> {to_be_deleted_event.log()}")
+    database_logger.info(f"DELETED EVENT -> {repr(to_be_deleted_event.log())}")
 
     # return {'status': 'success', 'deleted_item ': to_be_deleted_event.__repr__()}, 201
 
@@ -299,4 +299,4 @@ if __name__ == '__main__':
     # # This is not the correct logger for this message, but I will not create a different one just for this...
     database_logger.info("=================< SERVER JUST STARTED >=================")
 
-    app.run(port=8030, debug=True)
+    app.run(port=8030, debug=False)

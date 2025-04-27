@@ -35,8 +35,12 @@ from loggers import telegrambot_logger
 #     print(f"User {update.message.chat.id} in {message_type}: {text}")
 
 async def send_message_in_ZeroCalendar_group_chat( text : str):
-    telegrambot_logger.info(f'TELEGRAM_BOT -> SENT MESSAGE -> "{text}"')
-    await app.bot.send_message(chat_id=GROUP_ID, text=text)
+    telegrambot_logger.info(f'TELEGRAM_BOT -> SENT MESSAGE -> "{repr(text)}"')
+    await app.bot.send_message(
+        chat_id=GROUP_ID,
+        text=text,
+        parse_mode="Markdown"
+    )
 
 # =========================================================
 #                       LOG ERRORS
@@ -45,7 +49,7 @@ async def send_message_in_ZeroCalendar_group_chat( text : str):
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     s = f"Update {update} caused error {context.error}"
     print(s)
-    telegrambot_logger.error("TELEGRAM_BOT -> "+s)
+    telegrambot_logger.error("TELEGRAM_BOT -> "+repr(s))
 
 
 # =========================================================
