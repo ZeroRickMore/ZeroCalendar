@@ -295,29 +295,34 @@ def view_month(year, month):
 # ====================================
 
 def handle_exit_sigint(signum, frame):
-    s = "=================< SERVER SHUTTING DOWN (ctrl+c) >================="
+    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (ctrl+c) >xxxxxxxxxxxxxxxxx"
     werkzeug_logger.warning(s)
     print(s)
     sys.exit(0)
 
 def handle_exit_sigterm(signum, frame):
-    s = "=================< SERVER SHUTTING DOWN (systemctl or kill) >================="
+    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (systemctl or kill) >xxxxxxxxxxxxxxxxx"
     werkzeug_logger.warning(s)
     print(s)
     sys.exit(0)
 
-# Attach the signal handler
-signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
-signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
+
+
 
 if __name__ == '__main__':
+    # Attach the signal handler for process kill logging
+    signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
+    signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
+
+    # Start scheduler and telegram bot
     thread = threading.Thread(target=tgbot_scheduler.run, daemon=True)
     thread.start()
 
+    # Create missing files if necessary
     check_usernames_json()
     check_db()
 
-    # # This is not the correct logger for this message, but I will not create a different one just for this...
+    # Start server
     if DEBUG:
         werkzeug_logger.info("=================< SERVER STARTED IN DEBUG MODE >=================")
 
