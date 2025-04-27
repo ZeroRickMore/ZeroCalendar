@@ -2,7 +2,6 @@ import ZeroCalendarBot.bot_support as bot_support
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from loggers import telegrambot_logger
-from sys import exit
 
 # =========================================================
 #                       COMMANDS
@@ -103,7 +102,6 @@ def handle_exit_sigint():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-    exit(0)
 
 def handle_exit_sigterm():
     s = "-------!!!-------< TELEGRAM BOT SHUTTING DOWN (systemctl or kill) >-------!!!-------"
@@ -111,7 +109,7 @@ def handle_exit_sigterm():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-    exit(0)
+
 
 
 
