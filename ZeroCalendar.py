@@ -295,13 +295,13 @@ def view_month(year, month):
 # ====================================
 
 def handle_exit_sigint(signum, frame):
-    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (ctrl+c) >xxxxxxxxxxxxxxxxx\n"
+    s = "-------!!!-------< SERVER SHUTTING DOWN (ctrl+c) >-------!!!-------"
     myflask_logger.warning(s)
     print(s)
     sys.exit(0)
 
 def handle_exit_sigterm(signum, frame):
-    s = "xxxxxxxxxxxxxxxxx< SERVER SHUTTING DOWN (systemctl or kill) >xxxxxxxxxxxxxxxxx\n"
+    s = "-------!!!-------< SERVER SHUTTING DOWN (systemctl or kill) >-------!!!-------"
     myflask_logger.warning(s)
     print(s)
     sys.exit(0)
@@ -324,10 +324,10 @@ if __name__ == '__main__':
 
     # Start server
     if DEBUG:
-        myflask_logger.info("\n=================< SERVER STARTED IN DEBUG MODE >=================")
+        myflask_logger.info("-----------------< SERVER STARTED IN DEBUG MODE >-----------------")
 
         app.run(port=8030, debug=True)
     else:
-        myflask_logger.info("\n=================< SERVER STARTED >=================")
+        myflask_logger.info("-----------------< SERVER STARTED >-----------------")
 
         app.run(host='0.0.0.0', port=8030, debug=False)

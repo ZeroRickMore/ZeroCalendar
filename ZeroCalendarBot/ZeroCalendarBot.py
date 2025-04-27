@@ -58,7 +58,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 try:
-    s = "=================< TELEGRAM BOT STARTED >================="
+    s = "-----------------< TELEGRAM BOT STARTED >-----------------"
     print(s)
     telegrambot_logger.info(s)
 

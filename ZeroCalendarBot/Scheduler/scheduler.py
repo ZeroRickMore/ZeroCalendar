@@ -135,7 +135,7 @@ def run():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-    s = f"=================< SCHEDULER STARTED >================="
+    s = f"-----------------< SCHEDULER STARTED >-----------------"
     scheduler_logger.info(s)
     print(s)
 
@@ -149,7 +149,7 @@ def run():
         check_next_events(asyncio_loop=loop)       # Send the message
 
         if DEBUG: 
-            s = "xxxxxxxxxxxxxxxxx< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >xxxxxxxxxxxxxxxxx"
+            s = "-------!!!-------< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >-------!!!-------"
             print(s)
             scheduler_logger.warning(s)
             break
