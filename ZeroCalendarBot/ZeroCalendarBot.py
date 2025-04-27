@@ -3,6 +3,14 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from loggers import telegrambot_logger
 
+# Telegram BOT Vars
+bot_support.load_env_vars()
+BOT_TOKEN = bot_support.get_bot_token()
+GROUP_ID = bot_support.get_group_id()
+
+# Start bot
+telegram_bot_app = Application.builder().token(token=BOT_TOKEN).build()
+
 # =========================================================
 #                       COMMANDS
 # =========================================================
@@ -63,17 +71,6 @@ def main():
         print(s)
         telegrambot_logger.info(s)
 
-        # Telegram BOT Vars
-        bot_support.load_env_vars()
-        BOT_TOKEN = bot_support.get_bot_token()
-
-        global GROUP_ID
-        GROUP_ID = bot_support.get_group_id()
-
-        # Start bot
-        global telegram_bot_app
-        telegram_bot_app = Application.builder().token(token=BOT_TOKEN).build()
-
         # Commands
         # telegram_bot_app.add_handler(CommandHandler('start', start_command))
         # telegram_bot_app.add_handler(CommandHandler('help', help_command))
@@ -109,9 +106,3 @@ def handle_exit_sigterm():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-
-
-
-
-if __name__ == '__main__':
-    main()

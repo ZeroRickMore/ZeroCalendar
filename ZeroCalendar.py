@@ -10,21 +10,18 @@ import os
 import json
 
 DEBUG = False
-flask_app = None
+
+flask_app = Flask(__name__)
+flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
+flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(flask_app) # Connect to db
 
 # ====================================
 #            STARTUP STUFF
 # ====================================
 
 def main():
-    # Initialize flask flask_app and db
-    global flask_app
-    flask_app = Flask(__name__)
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
-    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    db.init_app(flask_app) # Connect to db
-
     # Create missing files if necessary
     check_usernames_json()
     check_db()
