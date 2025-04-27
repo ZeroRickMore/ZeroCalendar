@@ -2,6 +2,7 @@ import ZeroCalendarBot.bot_support as bot_support
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from loggers import telegrambot_logger
+from sys import exit
 
 # =========================================================
 #                       COMMANDS
@@ -36,7 +37,7 @@ from loggers import telegrambot_logger
 
 async def send_message_in_ZeroCalendar_group_chat( text : str):
     telegrambot_logger.info(f'SENT MESSAGE -> "{repr(text)}"')
-    await app.bot.send_message(
+    await telegram_bot_app.bot.send_message(
         chat_id=GROUP_ID,
         text=text,
         parse_mode="Markdown"
@@ -57,31 +58,62 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # =========================================================
 
 
-try:
-    s = "-----------------< TELEGRAM BOT STARTED >-----------------"
+def main():
+    try:
+        s = "-----------------< TELEGRAM BOT STARTED >-----------------"
+        print(s)
+        telegrambot_logger.info(s)
+
+        # Telegram BOT Vars
+        bot_support.load_env_vars()
+        BOT_TOKEN = bot_support.get_bot_token()
+
+        global GROUP_ID
+        GROUP_ID = bot_support.get_group_id()
+
+        # Start bot
+        global telegram_bot_app
+        telegram_bot_app = Application.builder().token(token=BOT_TOKEN).build()
+
+        # Commands
+        # telegram_bot_app.add_handler(CommandHandler('start', start_command))
+        # telegram_bot_app.add_handler(CommandHandler('help', help_command))
+
+        # Messages
+        # telegram_bot_app.add_handler(MessageHandler(filters.TEXT, handle_message))
+
+        # Errors
+        telegram_bot_app.add_error_handler(error)
+
+        # print("Polling")
+        # telegram_bot_app.run_polling(poll_interval=5) # Check updates every 5 seconds
+
+    except Exception as e:
+        telegrambot_logger.critical(repr(str(e)))
+
+
+# ====================================
+#           LOG PROCESS DEATH
+# ====================================
+
+
+def handle_exit_sigint():
+    s = "-------!!!-------< TELEGRAM BOT SHUTTING DOWN (ctrl+c) >-------!!!-------"
+    telegrambot_logger.warning(s)
     print(s)
-    telegrambot_logger.info(s)
 
-    # Telegram BOT Vars
-    bot_support.load_env_vars()
-    BOT_TOKEN = bot_support.get_bot_token()
-    GROUP_ID = bot_support.get_group_id()
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
 
-    # Start bot
-    app = Application.builder().token(token=BOT_TOKEN).build()
+def handle_exit_sigterm():
+    s = "-------!!!-------< TELEGRAM BOT SHUTTING DOWN (systemctl or kill) >-------!!!-------"
+    telegrambot_logger.warning(s)
+    print(s)
 
-    # Commands
-    # app.add_handler(CommandHandler('start', start_command))
-    # app.add_handler(CommandHandler('help', help_command))
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
 
-    # Messages
-    # app.add_handler(MessageHandler(filters.TEXT, handle_message))
 
-    # Errors
-    app.add_error_handler(error)
 
-    # print("Polling")
-    # app.run_polling(poll_interval=5) # Check updates every 5 seconds
-
-except Exception as e:
-    telegrambot_logger.critical(repr(str(e)))
+if __name__ == '__main__':
+    main()
