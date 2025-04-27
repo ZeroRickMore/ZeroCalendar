@@ -10,6 +10,11 @@ import os, json
 import ZeroCalendarBot.Scheduler.scheduler as tgbot_scheduler
 import threading
 
+# Log process death
+import signal
+import sys
+
+DEBUG = False
 
 # ====================================
 #            STARTUP STUFF
@@ -48,11 +53,12 @@ def check_db():
 # ====================================
 #               ROUTES
 # ====================================
-    
-@app.route('/ping')
-def ping():
-    database_logger.info("Who the hell pinged?!")
-    return 'pong'
+
+if DEBUG:
+    @app.route('/ping')
+    def ping():
+        database_logger.info("Who dares pinging me?!")
+        return 'pong'
 
 # ====================================
 #           EVENT MODIFIERS
@@ -285,9 +291,25 @@ def view_month(year, month):
     )
 
 
+# ====================================
+#           LOG PROCESS DEATH
+# ====================================
 
+def handle_exit_sigint(signum, frame):
+    s = "=================< SERVER SHUTTING DOWN (ctrl+c) >================="
+    database_logger.warning(s)
+    print(s)
+    sys.exit(0)
 
+def handle_exit_sigterm(signum, frame):
+    s = "=================< SERVER SHUTTING DOWN (systemctl or kill) >================="
+    database_logger.warning(s)
+    print(s)
+    sys.exit(0)
 
+# Attach the signal handler
+signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
+signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
 
 if __name__ == '__main__':
     thread = threading.Thread(target=tgbot_scheduler.run, daemon=True)
@@ -297,6 +319,11 @@ if __name__ == '__main__':
     check_db()
 
     # # This is not the correct logger for this message, but I will not create a different one just for this...
-    database_logger.info("=================< SERVER JUST STARTED >=================")
+    if DEBUG:
+        database_logger.info("=================< SERVER JUST STARTED IN DEBUG MODE >=================")
 
-    app.run(port=8030, debug=False)
+        app.run(port=8030, debug=True)
+    else:
+        database_logger.info("=================< SERVER JUST STARTED >=================")
+
+        app.run(host='0.0.0.0', port=8030, debug=False)
