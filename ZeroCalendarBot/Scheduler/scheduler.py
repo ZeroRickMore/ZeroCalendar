@@ -137,5 +137,5 @@ def run():
         sleep_through_the_night()
 
     while(True):
-        # wait_until_next_quarter() # Align with quarter, so wait 15 minutes
+        wait_until_next_quarter() # Align with quarter, so wait 15 minutes
         check_next_events(asyncio_loop=loop)       # Send the message
