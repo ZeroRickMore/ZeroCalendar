@@ -3,6 +3,7 @@ Orchestrator that runs the app components.
 
 Each component MUST have a main() function to start.
 Fill the ALL_APPS = [] variable in this script with the name of the imported app component, the one in the "import" lines.
+DO NOT PUT THE MAIN FLASK APP IN THE APP LIST! THAT IS STARTED BY ORCHESTRATOR ITSELF.
 '''
 
 import ZeroCalendar as flask_app
@@ -13,11 +14,10 @@ from threading import Thread
 from loggers import orchestrator_logger
 # Log process death
 import signal
-import sys
-import asyncio
+from sys import exit
 
 # Define the apps
-ALL_APPS : list = [flask_app, telegram_bot_app, scheduler_app]
+ALL_APPS : list = [telegram_bot_app, scheduler_app]
 # Define the threads
 THREADS : list[Thread] = []
 
@@ -32,7 +32,7 @@ def handle_exit_sigint(signum, frame):
     s = "-------!!!-------< ORCHESTRATOR SHUTTING DOWN (ctrl+c) >-------!!!-------"
     orchestrator_logger.warning(s)
     print(s)
-    sys.exit(0)
+    exit(0)
 
 def handle_exit_sigterm(signum, frame):
     print("YE")
@@ -40,7 +40,7 @@ def handle_exit_sigterm(signum, frame):
     s = "-------!!!-------< ORCHESTRATOR SHUTTING DOWN (systemctl or kill) >-------!!!-------"
     orchestrator_logger.warning(s)
     print(s)
-    sys.exit(0)
+    exit(0)
 
 def exit_orchestrator_cascade(type : str):
     if type not in ['sigint', 'sigterm']:
@@ -50,15 +50,21 @@ def exit_orchestrator_cascade(type : str):
         case 'sigint':
             for app_script in ALL_APPS:
                 app_script.handle_exit_sigint()
+            flask_app.handle_exit_sigint()
+
         case 'sigterm':
             for app_script in ALL_APPS:
                 app_script.handle_exit_sigterm()
+            flask_app.handle_exit_sigterm()
+
+    
+    # exit() should NOT go here!
 
 def exit_orchestrator_solo():
     s = "-------!!!-------< ORCHESTRATOR SHUTTING DOWN (script-forced) >-------!!!-------"
     orchestrator_logger.warning(s)
     print(s)
-    sys.exit(0)
+    exit(0)
 
 
 # ====================================
@@ -92,6 +98,10 @@ signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
 signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
 
 def main():
+    s = "-----------------< ORCHESTRATOR STARTED >-----------------"
+    orchestrator_logger.info(s)
+    print(s)
+
     global ALL_APPS, THREADS
 
     # Check imports (Double loop is important to not start threads uselessly) (worst case scenario accounted)
@@ -112,12 +122,7 @@ def main():
         thread.start()
         THREADS.append(thread)
 
-    for thread in THREADS:
-        break
-        thread.join()
-
-    while True:
-        pass
+    flask_app.main()
 
 if __name__ == '__main__':
     main()
