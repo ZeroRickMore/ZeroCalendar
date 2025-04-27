@@ -4,7 +4,8 @@ from loggers import scheduler_logger
 from models import db, DayEvent
 from datetime import datetime, timedelta
 import time
-from ZeroCalendar import app
+from ZeroCalendar import flask_app
+from sys import exit
 
 DEBUG = False
 
@@ -57,7 +58,7 @@ def get_events_in_next_hour() -> list[DayEvent]:
     current_hour = now.time()
     one_hour_later = (now + timedelta(hours=1)).time()
 
-    with app.app_context():
+    with flask_app.flask_app_context():
         events : list[DayEvent] = db.session.query(DayEvent).filter(
             DayEvent.deleted == False, 
             DayEvent.day == today,
@@ -131,7 +132,7 @@ def sleep_through_the_night():
 #            MAIN METHOD
 # ====================================
 
-def run():
+def main():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -153,3 +154,24 @@ def run():
             print(s)
             scheduler_logger.warning(s)
             break
+
+
+def handle_exit_sigint():
+    s = "-------!!!-------< TELEGRAM BOT SHUTTING DOWN (ctrl+c) >-------!!!-------"
+    scheduler_logger.warning(s)
+    print(s)
+
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
+
+def handle_exit_sigterm():
+    s = "-------!!!-------< TELEGRAM BOT SHUTTING DOWN (systemctl or kill) >-------!!!-------"
+    scheduler_logger.warning(s)
+    print(s)
+
+    # Here should go any fancy logic for safe death handling. Nothing for now :)
+    exit(0)
+
+
+if __name__ == '__main__':
+    main()
