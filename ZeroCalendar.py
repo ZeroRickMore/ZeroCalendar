@@ -9,8 +9,6 @@ from loggers import database_logger, myflask_logger
 import os
 import json
 
-DEBUG = False
-
 flask_app = Flask(__name__)
 flask_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
 flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -21,13 +19,13 @@ db.init_app(flask_app) # Connect to db
 #            STARTUP STUFF
 # ====================================
 
-def main():
+def main(DEBUG : bool):
     # Create missing files if necessary
     check_usernames_json()
     check_db()
 
     # Start server
-    create_flask_routes_after_main()
+    create_flask_routes_after_main(DEBUG=DEBUG)
     if DEBUG:
         s = "-----------------< FLASK STARTED IN DEBUG MODE >-----------------"
         myflask_logger.info(s)
@@ -58,7 +56,7 @@ def check_db():
 
 
 
-def create_flask_routes_after_main():
+def create_flask_routes_after_main(DEBUG : bool):
     '''
     This function helps creating the routes only after main() function is called.
     This doesn't look too clean, but it does the job at the cost of just an extra indentation...
@@ -325,7 +323,6 @@ def handle_exit_sigterm():
     print(s)
 
     # Here should go any fancy logic for safe death handling. Nothing for now :)
-
 
 
 if __name__ == '__main__':
