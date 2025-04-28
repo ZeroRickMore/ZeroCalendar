@@ -23,6 +23,8 @@ class MultiFormatter(logging.Formatter):
             self._style._fmt = '%(asctime)s [WERKZEUG] [%(levelname)s] - %(remote_addr)s - %(method)s %(path)s ===> %(message)s'
         elif record.name == 'myflask':
             self._style._fmt = '%(asctime)s [FLASK] [%(levelname)s] - %(remote_addr)s - %(method)s %(path)s ===> %(message)s'
+        elif record.name == 'orchestrator':
+            self._style._fmt = '%(asctime)s [ORCHESTRATOR] [%(levelname)s] ===> %(message)s'
         return super().format(record)
 
 
@@ -52,3 +54,7 @@ if __name__ != '__main__':
     scheduler_logger = logging.getLogger('scheduler')
     scheduler_logger.setLevel(logging.INFO)
     scheduler_logger.addHandler(file_handler)
+
+    orchestrator_logger = logging.getLogger('orchestrator')
+    orchestrator_logger.setLevel(logging.INFO)
+    orchestrator_logger.addHandler(file_handler)
