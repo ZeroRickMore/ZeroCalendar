@@ -6,7 +6,10 @@ from datetime import datetime, timedelta
 import time
 from ZeroCalendar import flask_app
 
-DEBUG = False
+RUN_ONLY_FIRST_MESSAGE = False
+DO_NOT_SKIP_NIGHT = True
+WAIT_ONLY_1_MINUTE = True
+
 
 # ====================================
 #            SEND MESSAGE
@@ -96,6 +99,7 @@ def wait_until_next_quarter():
     now = datetime.now()
 
     multiple_to_align_with = 15 # Should be 15
+    if WAIT_ONLY_1_MINUTE: multiple_to_align_with = 1
 
     minutes_to_wait = multiple_to_align_with - (now.minute % multiple_to_align_with)
 
@@ -107,6 +111,8 @@ def wait_until_next_quarter():
     time.sleep(delay)
 
 def sleep_through_the_night():
+    if DO_NOT_SKIP_NIGHT: return
+
     now = datetime.now()
     night_start = now.replace(hour=21, minute=0, second=0, microsecond=0)
     wake_time = now.replace(hour=10, minute=0, second=0, microsecond=0)
@@ -140,15 +146,14 @@ def main():
     print(s)
 
     # If it's night time, don't wake everybody up yet
-    if not DEBUG:
-        sleep_through_the_night()
+    sleep_through_the_night()
 
     while(True):
-        if not DEBUG: wait_until_next_quarter() # Align with quarter, so wait 15 minutes
+        if not RUN_ONLY_FIRST_MESSAGE: wait_until_next_quarter() # Align with quarter, so wait 15 minutes
         
         check_next_events(asyncio_loop=loop)       # Send the message
 
-        if DEBUG: 
+        if RUN_ONLY_FIRST_MESSAGE: 
             s = "-------!!!-------< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >-------!!!-------"
             print(s)
             scheduler_logger.warning(s)

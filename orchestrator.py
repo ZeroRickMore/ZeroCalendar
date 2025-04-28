@@ -20,6 +20,8 @@ from sys import exit
 #               VARIABLES
 # ====================================
 
+RUN_TELEGRAMBOT_ONLY = False
+
 # Joins the flask_app thread with a 0.5 timeout. A little noise is generated, but very small. This will enable ctrl+c to work. 
 # Turn to false if you will just use systemctl.
 NEED_KEYBOARD_INTERRUPT = True
@@ -109,6 +111,15 @@ def main():
     print(s)
 
     global ALL_APPS, THREADS
+
+    if RUN_TELEGRAMBOT_ONLY:
+        s = "Running on RUN_TELEGRAMBOT_ONLY"
+        orchestrator_logger.warning(s)
+        print(s)
+        telegram_bot_app.main()
+        exit()
+
+
 
     # Check imports (Double loop is important to not start threads uselessly) (worst case scenario accounted)
     errors = ''
