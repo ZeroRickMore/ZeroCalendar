@@ -16,26 +16,17 @@ from loggers import orchestrator_logger
 import signal
 from sys import exit
 import yaml
-
-# TODO:
-# Sarebbe più giusto fare un bel file settings dove metto i vari settings di flask, bot, scheduler
-# cosi in una botta li setuppo tutti
+    
+def load_settings() -> dict:
+    with open("settings.yaml", "r") as f:
+        settings = yaml.safe_load(f)
+    return settings
 
 # ====================================
 #               VARIABLES
 # ====================================
 
-RUN_TELEGRAMBOT_ONLY = False
-
-# Joins the flask_app thread with a 0.5 timeout. A little noise is generated, but very small. This will enable ctrl+c to work. 
-# Turn to false if you will just use systemctl.
-NEED_KEYBOARD_INTERRUPT = True
-
-# Define the apps
-ALL_APPS : list = [telegram_bot_app, scheduler_app]
-# Define the threads
 THREADS : list[Thread] = []
-
 
 # ====================================
 #          LOG PROCESS DEATH
@@ -104,15 +95,6 @@ def check_app_functions(script):
     return f"Script [{script.__name__}] did not implement: [{errors[:-1]}]. "
 
 
-def load_settings():
-    with open("settings.yaml", "r") as f:
-        settings = yaml.safe_load(f)
-
-    print(settings["bot"]["polling_interval"])
-
-
-
-
 # Attach the signal handler for process kill logging
 signal.signal(signal.SIGINT, handle_exit_sigint)  # Ctrl+C
 signal.signal(signal.SIGTERM, handle_exit_sigterm) # kill command (includes systemctl stop)
@@ -122,20 +104,20 @@ def main():
     orchestrator_logger.info(s)
     print(s)
 
+    settings = load_settings()
+
     global ALL_APPS, THREADS
 
-    if RUN_TELEGRAMBOT_ONLY:
+    if settings['Orchestrator']['RUN_TELEGRAMBOT_ONLY']:
         s = "Running on RUN_TELEGRAMBOT_ONLY"
         orchestrator_logger.warning(s)
         print(s)
         telegram_bot_app.main()
         exit()
 
-
-
     # Check imports (Double loop is important to not start threads uselessly) (worst case scenario accounted)
     errors = ''
-    for current_app_script in ALL_APPS:
+    for current_app_script in [flask_app, telegram_bot_app, scheduler_app]:
         result = check_app_functions(script=current_app_script)
         if result is not None:
             errors += result
@@ -147,18 +129,30 @@ def main():
     errors = None
 
     # Main app start
-    flask_thread = threading.Thread(target=flask_app.main, daemon=True)
+    flask_thread = threading.Thread(target=flask_app.main, kwargs={
+        "DEBUG" : settings['Flask']['DEBUG'],
+    }, daemon=True)
     flask_thread.start()
     THREADS.append(flask_thread)
 
-    # Finally run the apps
-    for current_app_script in ALL_APPS:
-        thread = threading.Thread(target=current_app_script.main, daemon=True)
-        thread.start()
-        THREADS.append(thread)
+    # TelegramBot app start
+    tgbot_thread = threading.Thread(target=telegram_bot_app.main, kwargs={
+        'USE_PRIVATE_CHAT' : settings['TelegramBot']['USE_PRIVATE_CHAT'],
+        'ACTIVATE_CHAT_ID_REQUEST' : settings['TelegramBot']['ACTIVATE_CHAT_ID_REQUEST'],
+        
+    }, daemon=True)
+    tgbot_thread.start()
+    THREADS.append(tgbot_thread)
+
+    # Scheduler app start
+    scheduler_thread = threading.Thread(target=telegram_bot_app.main, kwargs={
+        'USE_PRIVATE_CHAT' : settings['Scheduler']['USE_PRIVATE_CHAT']
+    }, daemon=True)
+    scheduler_thread.start()
+    THREADS.append(scheduler_thread)    
 
     # Join the flask_app thread fully or partially. Depends on the interactivity level required.
-    if NEED_KEYBOARD_INTERRUPT:
+    if settings['Orchestrator']['NEED_KEYBOARD_INTERRUPT']:
         while flask_thread.is_alive():
             flask_thread.join(timeout=0.5)  # Join with a timeout
     else:
