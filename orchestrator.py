@@ -16,6 +16,10 @@ from loggers import orchestrator_logger
 import signal
 from sys import exit
 
+# TODO:
+# Sarebbe più giusto fare un bel file settings dove metto i vari settings di flask, bot, scheduler
+# cosi in una botta li setuppo tutti
+
 # ====================================
 #               VARIABLES
 # ====================================
