@@ -12,3 +12,6 @@ def get_bot_token() -> str:
 
 def get_group_id() -> int:
     return int(os.getenv("GROUP_ID"))
+
+def get_debug_chat_id() -> int:
+    return int(os.getenv("DEBUG_CHAT_ID"))
