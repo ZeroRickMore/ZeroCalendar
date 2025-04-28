@@ -65,3 +65,4 @@ test.py
 testing.py
 /ZeroCalendarVENV
 settings.yaml
+*.yaml
