@@ -1,0 +1,20 @@
+Orchestrator:
+  # Tells Orchestrator to only run telegram bot, and not Flask
+  RUN_TELEGRAMBOT_ONLY: false
+
+  # Joins the flask_app thread with a 0.5 timeout. A little noise is generated, but very small. This will enable ctrl+c to work. 
+  # Turn to false if you will just use systemctl.
+  NEED_KEYBOARD_INTERRUPT: True
+
+FlaskApp:
+# Runs Flask in debug mode and activates /ping route
+  DEBUG: False
+
+TelegramBot:
+  # Uses private chat and not group. Requires DEBUG_CHAT_ID in env
+  USE_PRIVATE_CHAT: true
+  # Activates /chatid command to print chat id
+  ACTIVATE_CHAT_ID_REQUEST: false
+
+Scheduler:
+
