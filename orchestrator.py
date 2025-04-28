@@ -15,6 +15,7 @@ from loggers import orchestrator_logger
 # Log process death
 import signal
 from sys import exit
+import yaml
 
 # TODO:
 # Sarebbe più giusto fare un bel file settings dove metto i vari settings di flask, bot, scheduler
@@ -101,6 +102,13 @@ def check_app_functions(script):
     if errors == '': return None
 
     return f"Script [{script.__name__}] did not implement: [{errors[:-1]}]. "
+
+
+def load_settings():
+    with open("settings.yaml", "r") as f:
+        settings = yaml.safe_load(f)
+
+    print(settings["bot"]["polling_interval"])
 
 
 
