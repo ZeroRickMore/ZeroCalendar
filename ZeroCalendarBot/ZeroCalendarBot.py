@@ -67,7 +67,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # =========================================================
 
 
-def main(USE_PRIVATE_CHAT : bool, POLLING : bool, KEEP_ACTIVE : bool):
+def main(USE_PRIVATE_CHAT : bool, POLLING : bool, KEEP_ACTIVE : bool = False):
     try:
         s = "-----------------< TELEGRAM BOT STARTED >-----------------"
         print(s)
