@@ -14,7 +14,12 @@ TelegramBot:
   # Uses private chat and not group. Requires DEBUG_CHAT_ID in env
   USE_PRIVATE_CHAT: true
   # Activates /chatid command to print chat id
-  ACTIVATE_CHAT_ID_REQUEST: false
+  POLLING: false
 
 Scheduler:
-
+  # Produce a single message and then stop
+  RUN_ONLY_FIRST_MESSAGE: False
+  # Make it act during night too
+  DO_NOT_SKIP_NIGHT: True
+  # Message every 1 minute, fastest possible unless turbo spam with no delay...
+  WAIT_ONLY_1_MINUTE: True

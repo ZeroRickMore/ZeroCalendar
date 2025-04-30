@@ -6,11 +6,6 @@ from datetime import datetime, timedelta
 import time
 from ZeroCalendar import flask_app
 
-RUN_ONLY_FIRST_MESSAGE = False
-DO_NOT_SKIP_NIGHT = True
-WAIT_ONLY_1_MINUTE = True
-
-
 # ====================================
 #            SEND MESSAGE
 # ====================================
@@ -95,7 +90,7 @@ def check_next_events(asyncio_loop) -> None:
 #                WAIT
 # ====================================
 
-def wait_until_next_quarter():
+def wait_until_next_quarter(WAIT_ONLY_1_MINUTE : bool):
     now = datetime.now()
 
     multiple_to_align_with = 15 # Should be 15
@@ -110,7 +105,7 @@ def wait_until_next_quarter():
     print(s)
     time.sleep(delay)
 
-def sleep_through_the_night():
+def sleep_through_the_night(DO_NOT_SKIP_NIGHT : bool):
     if DO_NOT_SKIP_NIGHT: return
 
     now = datetime.now()
@@ -137,7 +132,7 @@ def sleep_through_the_night():
 #            MAIN METHOD
 # ====================================
 
-def main():
+def main(RUN_ONLY_FIRST_MESSAGE : bool, DO_NOT_SKIP_NIGHT : bool, WAIT_ONLY_1_MINUTE : bool):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -145,13 +140,13 @@ def main():
     scheduler_logger.info(s)
     print(s)
 
-    # If it's night time, don't wake everybody up yet
-    sleep_through_the_night()
-
     while(True):
-        if not RUN_ONLY_FIRST_MESSAGE: wait_until_next_quarter() # Align with quarter, so wait 15 minutes
+        # If it's night time, don't wake everybody up with a message
+        sleep_through_the_night(DO_NOT_SKIP_NIGHT=DO_NOT_SKIP_NIGHT)
+
+        if not RUN_ONLY_FIRST_MESSAGE: wait_until_next_quarter(WAIT_ONLY_1_MINUTE=WAIT_ONLY_1_MINUTE) # Align with quarter, so wait 15 minutes
         
-        check_next_events(asyncio_loop=loop)       # Send the message
+        check_next_events(asyncio_loop=loop) # Send the message
 
         if RUN_ONLY_FIRST_MESSAGE: 
             s = "-------!!!-------< SCHEDULER STOPPED DUE TO DEBUG OPTION ON >-------!!!-------"

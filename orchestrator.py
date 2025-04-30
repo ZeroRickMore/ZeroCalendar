@@ -112,7 +112,12 @@ def main():
         s = "Running on RUN_TELEGRAMBOT_ONLY"
         orchestrator_logger.warning(s)
         print(s)
-        telegram_bot_app.main()
+        telegram_bot_app.main(
+            USE_PRIVATE_CHAT=settings['TelegramBot']['USE_PRIVATE_CHAT'],
+            POLLING=settings['TelegramBot']['POLLING'],
+            # KEEP_ACTIVE is false if polling, else it must be true. So, just be the opposite of polling.
+            KEEP_ACTIVE=(not settings['TelegramBot']['POLLING'])
+        )
         exit()
 
     # Check imports (Double loop is important to not start threads uselessly) (worst case scenario accounted)
@@ -138,20 +143,23 @@ def main():
     # TelegramBot app start
     tgbot_thread = threading.Thread(target=telegram_bot_app.main, kwargs={
         'USE_PRIVATE_CHAT' : settings['TelegramBot']['USE_PRIVATE_CHAT'],
-        'ACTIVATE_CHAT_ID_REQUEST' : settings['TelegramBot']['ACTIVATE_CHAT_ID_REQUEST'],
-        
+        'POLLING' : settings['TelegramBot']['POLLING'],
     }, daemon=True)
     tgbot_thread.start()
     THREADS.append(tgbot_thread)
 
     # Scheduler app start
     scheduler_thread = threading.Thread(target=telegram_bot_app.main, kwargs={
-        'USE_PRIVATE_CHAT' : settings['Scheduler']['USE_PRIVATE_CHAT']
+        'RUN_ONLY_FIRST_MESSAGE' : settings['Scheduler']['RUN_ONLY_FIRST_MESSAGE'],
+        'DO_NOT_SKIP_NIGHT' : settings['Scheduler']['DO_NOT_SKIP_NIGHT'],
+        'WAIT_ONLY_1_MINUTE' : settings['Scheduler']['WAIT_ONLY_1_MINUTE']
+
     }, daemon=True)
     scheduler_thread.start()
     THREADS.append(scheduler_thread)    
 
     # Join the flask_app thread fully or partially. Depends on the interactivity level required.
+    # Joining only Flask is enough, considering every kind of process kill 
     if settings['Orchestrator']['NEED_KEYBOARD_INTERRUPT']:
         while flask_thread.is_alive():
             flask_thread.join(timeout=0.5)  # Join with a timeout

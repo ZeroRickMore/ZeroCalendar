@@ -67,7 +67,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # =========================================================
 
 
-def main(USE_PRIVATE_CHAT : bool, ACTIVATE_CHAT_ID_REQUEST : bool, ):
+def main(USE_PRIVATE_CHAT : bool, POLLING : bool, KEEP_ACTIVE : bool):
     try:
         s = "-----------------< TELEGRAM BOT STARTED >-----------------"
         print(s)
@@ -80,7 +80,7 @@ def main(USE_PRIVATE_CHAT : bool, ACTIVATE_CHAT_ID_REQUEST : bool, ):
             GROUP_ID = bot_support.get_debug_chat_id()
 
         # Commands
-        if ACTIVATE_CHAT_ID_REQUEST:
+        if POLLING:
             telegram_bot_app.add_handler(CommandHandler('chatid', chatid_command))
         # telegram_bot_app.add_handler(CommandHandler('help', help_command))
 
@@ -90,20 +90,25 @@ def main(USE_PRIVATE_CHAT : bool, ACTIVATE_CHAT_ID_REQUEST : bool, ):
         # Errors
         telegram_bot_app.add_error_handler(error)
 
-        if ACTIVATE_CHAT_ID_REQUEST:
-            print("ACTIVATE_CHAT_ID_REQUEST IS ON: Polling")
-            telegrambot_logger.warning("ACTIVATE_CHAT_ID_REQUEST IS ON, POLLING")
+        if POLLING:
+            s = "POLLING IS ON: Polling"
+            telegrambot_logger.warning(s)
+            print(s)
             telegram_bot_app.run_polling(poll_interval=5) # Check updates every 5 seconds
-        elif USE_PRIVATE_CHAT:
+        elif KEEP_ACTIVE:
             import asyncio
-            # If no polling, but bot in debug mode, just keep alive
-            s = "Bot started WITHOUT polling but with keepalive: sleeping forever"
+            s = "Bot started WITHOUT polling but with KEEP_ACTIVE: only useful if ran alone. Sleeping forever with asyncio loop."
             telegrambot_logger.warning(s)
             print(s)
             asyncio.get_event_loop().run_forever()
 
+        s = "TelegramBot is not polling nor sleeping. If ran with orchestrator, all good! Else, be careful."
+        telegrambot_logger.warning(s)
+        print(s)         
+
     except Exception as e:
         telegrambot_logger.critical(repr(str(e)))
+        print(e)
 
 
 # ====================================
