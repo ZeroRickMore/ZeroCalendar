@@ -149,7 +149,7 @@ def main():
     THREADS.append(tgbot_thread)
 
     # Scheduler app start
-    scheduler_thread = threading.Thread(target=telegram_bot_app.main, kwargs={
+    scheduler_thread = threading.Thread(target=scheduler_app.main, kwargs={
         'RUN_ONLY_FIRST_MESSAGE' : settings['Scheduler']['RUN_ONLY_FIRST_MESSAGE'],
         'DO_NOT_SKIP_NIGHT' : settings['Scheduler']['DO_NOT_SKIP_NIGHT'],
         'WAIT_ONLY_1_MINUTE' : settings['Scheduler']['WAIT_ONLY_1_MINUTE']
