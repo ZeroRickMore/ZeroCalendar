@@ -3,8 +3,6 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 from loggers import telegrambot_logger
 
-
-
 # Telegram BOT Vars
 bot_support.load_env_vars()
 BOT_TOKEN = bot_support.get_bot_token()
