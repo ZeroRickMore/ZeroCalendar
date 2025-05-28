@@ -173,9 +173,17 @@ def get_day_events_total() -> tuple[list[DayEvent], list[DayEvent]] :
 def craft_events_notification_text(events : list[DayEvent]) -> str:
     # Validation
     if not isinstance(events, list):
-        raise TypeError(f"events must be a list, not {type(events)}")
+        err = f"events must be a list, not {type(events)}"
+        scheduler_logger.error(err)
+        print(err)
+        return
+        # raise TypeError(err)
     if len(events)==0:
-        raise ValueError(f"Why was this function called with no events? len(events)==0")
+        err = f"Why was this function called with no events? len(events)==0"
+        scheduler_logger.error(err)
+        print(err)
+        return
+        # raise ValueError(err)
     
     # Logic
     if len(events)==1:
@@ -198,7 +206,11 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
 def craft_whole_day_events_notification_text(today_from_10_to_midnight_events : list[DayEvent], tomorrow_from_midnight_to_10 : list[DayEvent]) -> str:
     # Validation
     if not isinstance(today_from_10_to_midnight_events, list):
-        raise TypeError(f"today_from_10_to_midnight_events must be a list, not {type(today_from_10_to_midnight_events)}")
+        err = f"today_from_10_to_midnight_events must be a list, not {type(today_from_10_to_midnight_events)}"
+        scheduler_logger.error(err)
+        print(err)
+        return
+        # raise TypeError(err)
 
     len_today_from_10_to_midnight_events = len(today_from_10_to_midnight_events)
     len_tomorrow_from_midnight_to_10 = len(tomorrow_from_midnight_to_10)
