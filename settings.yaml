@@ -2,26 +2,26 @@
 
 Orchestrator:
   # Tells Orchestrator to only run telegram bot, and not Flask
-  RUN_TELEGRAMBOT_ONLY: false
+  RUN_TELEGRAMBOT_ONLY: false # Development false
 
   # Joins the flask_app thread with a 0.5 timeout. A little noise is generated, but very small. This will enable ctrl+c to work. 
   # Turn to false if you will just use systemctl.
-  NEED_KEYBOARD_INTERRUPT: True
+  NEED_KEYBOARD_INTERRUPT: True # Development true
 
 Flask:
 # Runs Flask in debug mode and activates /ping route
-  DEBUG: False
+  DEBUG: False # Development false
 
 TelegramBot:
   # Uses private chat and not group. Requires DEBUG_CHAT_ID in env
-  USE_PRIVATE_CHAT: true
+  USE_PRIVATE_CHAT: true # Development true
   # Activates /chatid command to print chat id
-  POLLING: false
+  POLLING: false # Development false
 
 Scheduler:
   # Produce a single message and then stop
-  RUN_ONLY_FIRST_MESSAGE: False
+  RUN_ONLY_FIRST_MESSAGE: False # Development True
   # Make it act during night too
-  DO_NOT_SKIP_NIGHT: True
+  DO_NOT_SKIP_NIGHT: True # Development True
   # Message every 1 minute, fastest possible unless turbo spam with no delay...
-  WAIT_ONLY_1_MINUTE: True
+  WAIT_ONLY_1_MINUTE: True # Development True
