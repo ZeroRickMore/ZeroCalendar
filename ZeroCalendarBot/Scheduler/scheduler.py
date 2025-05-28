@@ -193,9 +193,20 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
 
     EVENT_BULLETPOINT = '📝'
 
+    now = datetime.now()
+
     for event in events:
         minute = (f"0{event.when.minute}" if event.when.minute in range(0, 10) else str(event.when.minute)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
-        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}* \n\n'
+        delay_hours = event.when.hour - now.hour
+        delay_minutes = event.when.minute - now.minute
+        delay_minutes_string = (f"0{delay_minutes}" if delay_minutes in range(0, 10) else str(delay_minutes)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
+        
+        if delay_hours > 0:
+            delay = f"{delay_hours}h{delay_minutes_string}min"
+        else:
+            delay = f"{delay_minutes_string}min"
+
+        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n'
         s += f'"_{event.description}_"\n\n──────────────────────────\n'
     
     s += '\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️'
