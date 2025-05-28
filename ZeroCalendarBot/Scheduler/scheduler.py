@@ -238,10 +238,22 @@ def craft_whole_day_events_notification_text(today_from_10_to_midnight_events : 
 
     EVENT_BULLETPOINT = '📝'
 
+    now = datetime.now()
+
     # Craft string for events from today 10:00 AM to midnight
     for event in today_from_10_to_midnight_events:
         minute = (f"0{event.when.minute}" if event.when.minute in range(0, 10) else str(event.when.minute)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
-        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}* \n\n'
+        
+        delay_hours = event.when.hour - now.hour
+        delay_minutes = event.when.minute - now.minute
+        delay_minutes_string = (f"0{delay_minutes}" if delay_minutes in range(0, 10) else str(delay_minutes)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
+        
+        if delay_hours > 0:
+            delay = f"{delay_hours}h{delay_minutes_string}min"
+        else:
+            delay = f"{delay_minutes_string}min"        
+
+        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n\n\n'
         s += f'"_{event.description}_"\n\n──────────────────────────\n'
     
     # Craft string for events from tomorrow midnight to 10:00 AM
@@ -249,7 +261,17 @@ def craft_whole_day_events_notification_text(today_from_10_to_midnight_events : 
         s += "\n\n⭐️⭐️⭐️⭐️  Domani  ⭐️⭐️⭐️⭐️\n\n"
         for event in tomorrow_from_midnight_to_10:
             minute = (f"0{event.when.minute}" if event.when.minute in range(0, 10) else str(event.when.minute)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
-            s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}* \n\n'
+            
+            delay_hours = event.when.hour - now.hour + 24 # It is tomorrow, so it is 24 hours later
+            delay_minutes = event.when.minute - now.minute
+            delay_minutes_string = (f"0{delay_minutes}" if delay_minutes in range(0, 10) else str(delay_minutes)) # Place a zero in front of single digit numbers (12:05 became 12:5, now it's still  12:05)
+            
+            if delay_hours > 0:
+                delay = f"{delay_hours}h{delay_minutes_string}min"
+            else:
+                delay = f"{delay_minutes_string}min" 
+            
+            s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n\n\n'
             s += f'"_{event.description}_"\n\n──────────────────────────\n'    
 
     
