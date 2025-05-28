@@ -1,9 +1,5 @@
 '''
 Orchestrator that runs the app components.
-
-Each component MUST have a main() function to start.
-Fill the ALL_APPS = [] variable in this script with the name of the imported app component, the one in the "import" lines.
-DO NOT PUT THE MAIN FLASK APP IN THE APP LIST! THAT IS STARTED BY ORCHESTRATOR ITSELF.
 '''
 
 import ZeroCalendar as flask_app
@@ -52,13 +48,13 @@ def exit_orchestrator_cascade(type : str):
     
     match type:
         case 'sigint':
-            for app_script in ALL_APPS:
-                app_script.handle_exit_sigint()
+            scheduler_app.handle_exit_sigint()
+            telegram_bot_app.handle_exit_sigint()
             flask_app.handle_exit_sigint()
 
         case 'sigterm':
-            for app_script in ALL_APPS:
-                app_script.handle_exit_sigterm()
+            scheduler_app.handle_exit_sigterm()
+            telegram_bot_app.handle_exit_sigterm()
             flask_app.handle_exit_sigterm()
 
     
@@ -106,7 +102,7 @@ def main():
 
     settings = load_settings()
 
-    global ALL_APPS, THREADS
+    global THREADS
 
     if settings['Orchestrator']['RUN_TELEGRAMBOT_ONLY']:
         s = "Running on RUN_TELEGRAMBOT_ONLY"
