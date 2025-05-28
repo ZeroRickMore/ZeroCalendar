@@ -44,7 +44,10 @@ def handle_exit_sigterm(signum, frame):
 
 def exit_orchestrator_cascade(type : str):
     if type not in ['sigint', 'sigterm']:
-        raise ValueError(f"type should be ['sigint', 'sigterm'], not {type}")
+        err = f"type should be ['sigint', 'sigterm'], not {type}"
+        orchestrator_logger.error(err)
+        print(err)
+        raise ValueError(err)
     
     match type:
         case 'sigint':

@@ -15,7 +15,7 @@ def DayEvent_validator(day_event : DayEvent) -> bool:
     # Username ====================================================
 
     username = day_event.username
-
+    
     if not isinstance(username, str):
         raise TypeError(f"\nUsername is not str: {type(username)}")
     if len(username) > 50:

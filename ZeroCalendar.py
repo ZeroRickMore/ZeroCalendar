@@ -127,7 +127,9 @@ def create_flask_routes_after_main(DEBUG : bool):
         The username is inferred from the usernames.json
         '''
         if not isinstance(year, int) or not isinstance(month, int) or not isinstance(day, int):
-            raise TypeError(f"All must be int: {type(year)}, {type(month)}, {type(day)}")
+            err = f"All must be int: {type(year)}, {type(month)}, {type(day)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
 
         return render_template('add_event.html', today=datetime.strptime(f"{year}-{month}-{day}", "%Y-%m-%d").date())
 
@@ -148,14 +150,18 @@ def create_flask_routes_after_main(DEBUG : bool):
         The username is inferred from the usernames.json
         '''
         if not isinstance(event_id, int):
-            raise TypeError(f"event_id must be int: {type(event_id)}")
+            err = f"event_id must be int: {type(event_id)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
         
         input_data = get_DayEvent_dict_from_request_form(request=request, form_data=request.form)
         
         to_be_modified_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
         if to_be_modified_event is None:
-            raise Exception("Event to modify not found...")
+            err = f"Event to modify not found with id={event_id}..."
+            myflask_logger.error(err)
+            raise Exception(err)
 
         # Save for logger
         previous_stuff = to_be_modified_event.copy()
@@ -198,7 +204,9 @@ def create_flask_routes_after_main(DEBUG : bool):
         '''
 
         if not isinstance(event_id, int):
-            raise TypeError(f"event_id must be int: {type(event_id)}")
+            err = f"event_id must be int: {type(event_id)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
         
         to_be_deleted_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
@@ -228,7 +236,9 @@ def create_flask_routes_after_main(DEBUG : bool):
         View an event by id
         '''
         if not isinstance(event_id, int):
-            raise TypeError(f"event_id must be int: {type(event_id)}")  
+            err = f"event_id must be int: {type(event_id)}"
+            myflask_logger.error(err)
+            raise TypeError(err)  
 
         to_be_viewed_event = db.session.get(DayEvent, event_id) # Find item to modify if exists
 
@@ -240,11 +250,17 @@ def create_flask_routes_after_main(DEBUG : bool):
         View all events in a day.
         '''
         if not isinstance(day, int):
-            raise TypeError(f"day must be str, not {type(day)}")
+            err = f"day must be str, not {type(day)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
         if not isinstance(month, int):
-            raise TypeError(f"day must be str, not {type(month)}")
+            err = f"day must be str, not {type(month)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
         if not isinstance(year, int):
-            raise TypeError(f"day must be str, not {type(year)}")
+            err = f"day must be str, not {type(year)}"
+            myflask_logger.error(err)
+            raise TypeError(err)
 
 
         target_day = date(year, month, day)
