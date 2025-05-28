@@ -21,11 +21,7 @@ def main(RUN_ONLY_FIRST_MESSAGE : bool, DO_NOT_SKIP_NIGHT : bool, WAIT_ONLY_1_MI
 
     while(True):
         # If it's night time, don't wake everybody up with a message
-        sleep_through_the_night(DO_NOT_SKIP_NIGHT=DO_NOT_SKIP_NIGHT)
-
-        # Send morning notification night after the sleep! It makes sense, no fancy controls if it's 10:00 or not
-        # because sleep_through_the_night() already handles it
-        send_morning_day_events_notification(asyncio_loop=loop)
+        sleep_through_the_night_and_send_goodmorning_afterwards(DO_NOT_SKIP_NIGHT=DO_NOT_SKIP_NIGHT, asyncio_loop=loop)
 
         if not RUN_ONLY_FIRST_MESSAGE: wait_until_next_quarter(WAIT_ONLY_1_MINUTE=WAIT_ONLY_1_MINUTE) # Align with quarter, so wait 15 minutes
         
@@ -44,7 +40,7 @@ def main(RUN_ONLY_FIRST_MESSAGE : bool, DO_NOT_SKIP_NIGHT : bool, WAIT_ONLY_1_MI
 # ====================================
 
 
-def sleep_through_the_night(DO_NOT_SKIP_NIGHT : bool):
+def sleep_through_the_night_and_send_goodmorning_afterwards(DO_NOT_SKIP_NIGHT : bool, asyncio_loop):
     if DO_NOT_SKIP_NIGHT: return
 
     now = datetime.now()
@@ -58,7 +54,13 @@ def sleep_through_the_night(DO_NOT_SKIP_NIGHT : bool):
         s = f"Sleeping for {sleep_duration/3600:.2f} hours until {wake_time.strftime('%H:%M')}. GOODNIGHT!"
         scheduler_logger.info(s)
         print(s)
+
+        # Goodnight
         time.sleep(sleep_duration)
+
+        # Good morning. Send good morning message after the night
+        send_morning_day_events_notification(asyncio_loop=asyncio_loop)
+
     else:
         s = "It's not night yet — no need to sleep."
         print(s)
@@ -206,7 +208,7 @@ def craft_events_notification_text(events : list[DayEvent]) -> str:
         else:
             delay = f"{delay_minutes_string}min"
 
-        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n'
+        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n_(tra {delay})_\n\n'
         s += f'"_{event.description}_"\n\n──────────────────────────\n'
     
     s += '\n⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️⭐️'
@@ -251,9 +253,9 @@ def craft_whole_day_events_notification_text(today_from_10_to_midnight_events : 
         if delay_hours > 0:
             delay = f"{delay_hours}h{delay_minutes_string}min"
         else:
-            delay = f"{delay_minutes_string}min"        
+            delay = f"{delay_minutes}min"        
 
-        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n\n\n'
+        s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n_(tra {delay})_\n\n\n\n'
         s += f'"_{event.description}_"\n\n──────────────────────────\n'
     
     # Craft string for events from tomorrow midnight to 10:00 AM
@@ -271,7 +273,7 @@ def craft_whole_day_events_notification_text(today_from_10_to_midnight_events : 
             else:
                 delay = f"{delay_minutes_string}min" 
             
-            s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n(tra {delay})\n\n\n\n'
+            s += f'\n{EVENT_BULLETPOINT} {event.when.hour}:{minute} - *{event.title}*\n_(tra {delay})_\n\n\n\n'
             s += f'"_{event.description}_"\n\n──────────────────────────\n'    
 
     
